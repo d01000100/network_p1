@@ -8,7 +8,6 @@ private:
 public:
 	unsigned char* buffer; // made public for debugging TODO: make private
 	RecieveBuffer(unsigned int size = 1024);
-	~RecieveBuffer();
 	unsigned char* getBuffer(); // to expose the buffer to the socket
 	void setDataRecieved(unsigned int len);
 	int readInt();

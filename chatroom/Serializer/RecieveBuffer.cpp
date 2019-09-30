@@ -6,10 +6,6 @@ RecieveBuffer::RecieveBuffer(unsigned int size) {
 	data_recieved = 0;
 }
 
-RecieveBuffer::~RecieveBuffer() {
-	delete buffer;
-}
-
 unsigned char* RecieveBuffer::getBuffer() { return buffer; }
 
 void RecieveBuffer::setDataRecieved(unsigned int len) { 

@@ -16,10 +16,6 @@ void SendBuffer::growBuffer() {
 	buffer = newBuffer;
 }
 
-SendBuffer::~SendBuffer() {
-	//delete buffer;
-}
-
 bool SendBuffer::writeInt(int data) {
 	// While the free space of the buffer is
 	// not enought to store the int, grow it

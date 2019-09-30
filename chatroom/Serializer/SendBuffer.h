@@ -9,7 +9,6 @@ private:
 public:
 	unsigned char* buffer; // made public for debugging TODO: make private
 	SendBuffer(unsigned int size = 64);
-	~SendBuffer();
 	bool writeInt(int data);
 	bool writeShort(short data);
 	bool writeString(std::string data);
