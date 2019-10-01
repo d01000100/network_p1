@@ -6,6 +6,8 @@ SendBuffer::SendBuffer(unsigned int size) {
 	write_index = 0;
 }
 
+unsigned char* SendBuffer::getBuffer() { buffer; }
+
 void SendBuffer::growBuffer() {
 	size *= 2;
 	unsigned char* newBuffer = new unsigned char[size];

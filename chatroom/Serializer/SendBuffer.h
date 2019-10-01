@@ -8,6 +8,7 @@ private:
 	void growBuffer();
 public:
 	unsigned char* buffer; // made public for debugging TODO: make private
+	unsigned char* getBuffer(); // to expose to the socket
 	SendBuffer(unsigned int size = 64);
 	bool writeInt(int data);
 	bool writeShort(short data);
