@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
 	//sendBuffer.printBuffer();
 
 	RecieveBuffer recvB;
-	recvB.buffer = sendBuffer.buffer;
+	//recvB.buffer = sendBuffer.buffer;
 	recvB.setDataRecieved(16);
 
 	printf("read: %d\n", recvB.readInt());

@@ -21,15 +21,15 @@
     <ClCompile Include="ProtocolManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Message.h">
+    <ClInclude Include="ProtocolManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ProtocolManager.h">
+    <ClInclude Include="ProtocolMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Message.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

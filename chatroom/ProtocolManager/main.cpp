@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 	LoginMessage* login = new LoginMessage();
 	login->client_name = "super original";
 	loginSB = writeMessage(login);
-	loginRB.buffer = loginSB.buffer;
+	//loginRB.buffer = loginSB.buffer;
 	loginRB.setDataRecieved(1024);
 	recvM = readMessage(loginRB);
 
@@ -22,7 +22,7 @@ int main(int argc, char** argv)
 	JoinMessage* joinM = new JoinMessage();
 	joinM->room_name = "server chido";
 	joinSB = writeMessage(joinM);
-	joinRecvB.buffer = joinSB.buffer;
+	//joinRecvB.buffer = joinSB.buffer;
 	joinRecvB.setDataRecieved(1024);
 	recvM = readMessage(joinRecvB);
 
@@ -35,7 +35,7 @@ int main(int argc, char** argv)
 	LeaveMessage* LeaveM = new LeaveMessage();
 	LeaveM->room_name = "server chido";
 	leaveSB = writeMessage(LeaveM);
-	LeaveRecvB.buffer = leaveSB.buffer;
+	//LeaveRecvB.buffer = leaveSB.buffer;
 	LeaveRecvB.setDataRecieved(1024);
 	recvM = readMessage(LeaveRecvB);
 
@@ -49,7 +49,7 @@ int main(int argc, char** argv)
 	SendM->room_name = "server chido";
 	SendM->message = "todos son super chidos";
 	sendSB = writeMessage(SendM);
-	SendRecvB.buffer = sendSB.buffer;
+	//SendRecvB.buffer = sendSB.buffer;
 	SendRecvB.setDataRecieved(1024);
 	recvM = readMessage(SendRecvB);
 
@@ -65,7 +65,7 @@ int main(int argc, char** argv)
 	RecieveM->message = "todos son super chidos";
 	RecieveM->sender_name = "muy original";
 	recieveSB = writeMessage(RecieveM);
-	RecieveRecvB.buffer = recieveSB.buffer;
+	//RecieveRecvB.buffer = recieveSB.buffer;
 	RecieveRecvB.setDataRecieved(1024);
 	recvM = readMessage(RecieveRecvB);
 
