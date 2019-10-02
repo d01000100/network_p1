@@ -5,8 +5,8 @@ class RecieveBuffer
 private:
 	unsigned int read_index;
 	unsigned int data_recieved;
+	unsigned char* buffer; 
 public:
-	unsigned char* buffer; // made public for debugging TODO: make private
 	RecieveBuffer(unsigned int size = 1024);
 	unsigned char* getBuffer(); // to expose the buffer to the socket
 	void setDataRecieved(unsigned int len);
