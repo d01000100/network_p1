@@ -21,34 +21,42 @@
 
 #define ESCAPE 27
 #define RETURN 13
+#define BACKSPACE 8
 
-SendBuffer* determineMsgType(std::string msgType, std::string message, std::string roomName = "")
+std::vector<std::string> receivedMessages;
+RecieveBuffer rcvBuffer;
+
+SendBuffer determineMsgType(std::string msgType, std::string message, std::string roomName = "")
 {
+	std::string debug = "type: " + msgType + ", room: " + roomName + ", message: " + message + "\n";
+	receivedMessages.push_back(debug);
+	SendBuffer newBuff;
+
 	if (".send" == msgType)
 	{
 		UserMessage MSG;
 		MSG.room_name = roomName;
 		MSG.message = message;
-		return &writeMessage(&MSG);
+		newBuff = writeMessage(&MSG);
 	}
 	if (".join" == msgType)
 	{
 		JoinMessage MSG;
 		MSG.room_name = roomName;
-		return &writeMessage(&MSG);
+		newBuff = writeMessage(&MSG);
 	}
 	if (".leave" == msgType)
 	{
 		LeaveMessage MSG;
 		MSG.room_name = roomName;
-		return &writeMessage(&MSG);
+		newBuff = writeMessage(&MSG);
 	}
-	return NULL;
+	return newBuff;
 }
 
-SendBuffer* checkMessage(std::string message)
+SendBuffer checkMessage(std::string message)
 {
-	printf("checking this message...\n");
+	//printf("checking this message...\n");
 	// Look for protocol
 	std::string delimiter = " ";
 
@@ -72,7 +80,6 @@ int main(int argc, char** argv)
 {
 	WSADATA wsaData;
 	int iResult;
-	std::vector<std::string> receivedMessages;
 
 	// Initialize Winsock
 	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -154,11 +161,11 @@ int main(int argc, char** argv)
 
 	LoginMessage loginMessage;
 	loginMessage.client_name = client_name;
-	SendBuffer* theBuffer = new SendBuffer();
-	*theBuffer = writeMessage(&loginMessage);
+	SendBuffer theBuffer;
+	theBuffer = writeMessage(&loginMessage);
 
 	printf("Logging in to the server...\n");
-	iResult = send(connectSocket, (char*)theBuffer->getBuffer(), theBuffer->getDataLength(), 0);
+	iResult = send(connectSocket, (char*)theBuffer.getBuffer(), theBuffer.getDataLength(), 0);
 	if (iResult == SOCKET_ERROR)
 	{
 		printf("send() failed with error: %d\n", WSAGetLastError());
@@ -176,7 +183,7 @@ int main(int argc, char** argv)
 
 	// #3 write & read
 	bool should_exit = false;
-	std::string message;
+	std::string* message = new std::string();
 	DWORD NonBlock = 1;
 
 	while (!should_exit)
@@ -184,34 +191,45 @@ int main(int argc, char** argv)
 		if (_kbhit())
 		{
 			char ch = _getch();
-			message.push_back(ch);
-			system("cls");
-			std::cout << "Welcome " << client_name << "!!\n" << std::endl;
-			std::cout << "======================================\n" << std::endl;
-			std::cout << "Received Messages: \n" << std::endl;
-			for (int i = 0; i < receivedMessages.size(); i++)
-			{
-				printf("$ %s\n", receivedMessages[i].c_str());
-			}
-			std::cout << "\n\n\n" << std::endl;
-			printf("Your Message: %s", message.c_str());
-
 			if (ch == ESCAPE)
 			{
 				should_exit = true;
 			}
+			if (ch == BACKSPACE)
+			{
+				message->pop_back();
+			}
 			if (ch == RETURN)
 			{
-				theBuffer = checkMessage(message);
-				if (theBuffer == NULL) { continue; }
-				iResult = send(connectSocket, (char*)theBuffer->getBuffer(), theBuffer->getDataLength(), 0);
+
+				SendBuffer theSecondBuffer = checkMessage(*message);
+				message->clear();
+				if (theSecondBuffer.getDataLength()==0) { continue; }
+
+				iResult = send(connectSocket, (char*)theSecondBuffer.getBuffer(), theSecondBuffer.getDataLength(), 0);
 				if (iResult == SOCKET_ERROR)
 				{
 					printf("send() failed with error: %d\n", WSAGetLastError());
 					closesocket(connectSocket);
 					WSACleanup();
+					std::cout << theSecondBuffer.getDataLength() << std::endl;
+					system("pause");
 					return 1;
 				}
+			}
+			else
+			{
+				message->push_back(ch);
+				system("cls");
+				std::cout << "Welcome " << client_name << "!!\n" << std::endl;
+				std::cout << "======================================\n" << std::endl;
+				std::cout << "Received Messages: \n" << std::endl;
+				for (int i = 0; i < receivedMessages.size(); i++)
+				{
+					printf("$ %s\n", receivedMessages[i].c_str());
+				}
+				std::cout << "\n\n\n" << std::endl;
+				printf("Your Message: %s", message->c_str());
 			}
 		}
 
@@ -224,10 +242,10 @@ int main(int argc, char** argv)
 			printf("ioctlsocket() failed with error %d\n", WSAGetLastError());
 			closesocket(connectSocket);
 			WSACleanup();
+			system("pause");
 			return 1;
 		}
 		//printf("Waiting to receive data from the server...\n");
-		RecieveBuffer rcvBuffer;
 		iResult = recv(connectSocket, (char*)rcvBuffer.getBuffer(), DEFAULT_BUFLEN, 0);
 		if (iResult > 0)
 		{
@@ -267,6 +285,8 @@ int main(int argc, char** argv)
 	// #4 close
 	closesocket(connectSocket);
 	WSACleanup();
+
+	system("pause");
 
 	return 0;
 }

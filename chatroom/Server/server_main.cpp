@@ -28,6 +28,10 @@ RoomManager _room_m;
 
 bool _should_close = false;
 
+struct {
+	int clients, totalClients;
+} _debug_info;
+
 void key_listen() {
 	if (_kbhit())
 	{
@@ -36,6 +40,13 @@ void key_listen() {
 		if (ch == ESCAPE)
 		{
 			_should_close = true;
+		}
+
+		if (ch == 9) { // Tab 
+			printf("clients: %d, TotalClients: %d\n", _debug_info.clients, TotalClients);
+			for (int i = 0; i < TotalClients; i++) {
+				printf("Client: %s, socket: %d\n", ClientArray[i]->name.c_str(), ClientArray[i]->socket);
+			}
 		}
 	}
 }
@@ -155,6 +166,8 @@ int main(int argc, char** argv)
 	timeval timeVal;
 	timeVal.tv_sec = 1;
 
+	printf("Server ready!\n");
+
 	while (!_should_close)
 	{
 		key_listen();
@@ -178,6 +191,7 @@ int main(int argc, char** argv)
 			printf("select() failed with error: %d\n", WSAGetLastError());
 			return 1;
 		}
+		_debug_info.clients = total;
 
 		// Check for arriving connections on the listening socket
 		if (FD_ISSET(listenSocket, &ReadSet))
@@ -205,11 +219,12 @@ int main(int argc, char** argv)
 					info->socket = acceptSocket;
 					ClientArray[TotalClients] = info;
 					TotalClients++;
+					printf("Client with socket %u detected\n", info->socket);
 				}
 			}
 		}
 
-		for (int i = 0; i < total && i < TotalClients; i++)
+		for (int i = 0; i < TotalClients; i++)
 		{
 			ClientInfo* client = ClientArray[i];
 
@@ -219,6 +234,7 @@ int main(int argc, char** argv)
 			{
 				client->dataBuf.buf = (char*)client->recvBuf.getBuffer();
 				client->dataBuf.len = DEFAULT_BUFLEN;
+
 
 				DWORD Flags = 0;
 				iResult = WSARecv(
@@ -240,9 +256,13 @@ int main(int argc, char** argv)
 						printf("WSARecv failed with error: %d\n", WSAGetLastError());
 						disconnectClient(i);
 					}
+					else {
+						continue;
+					}
 				}
 				else if (RecvBytes > 0)
 				{
+					printf("Recieved %d bytes\n", RecvBytes);
 					client->recvBuf.setDataRecieved(RecvBytes);
 					Message* recievedMessage = readMessage(client->recvBuf);
 
