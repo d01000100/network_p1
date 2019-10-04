@@ -64,3 +64,7 @@ void SendBuffer::printBuffer() {
 	}
 	printf("\n");
 }
+
+unsigned int SendBuffer::getDataLength() {
+	return write_index; // in bytes
+}

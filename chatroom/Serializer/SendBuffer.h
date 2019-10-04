@@ -16,5 +16,6 @@ public:
 	bool writeString(std::string data);
 	// for debugging
 	void printBuffer();
+	unsigned int getDataLength();
 };
 
