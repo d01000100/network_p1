@@ -47,7 +47,7 @@ void disconnectClient(int index) {
 	closesocket(client->socket);
 
 	_room_m.deleteMember(client);
-	_room_m.printRooms();
+	//_room_m.printRooms();
 
 	for (int j = index; j < TotalClients; j++) {
 		ClientArray[j] = ClientArray[j + 1];
@@ -247,23 +247,48 @@ int main(int argc, char** argv)
 					Message* recievedMessage = readMessage(client->recvBuf);
 
 					switch (recievedMessage->type) {
-						case LOGIN:
+					case LOGIN: {
 							client->name = ((LoginMessage*)recievedMessage)->client_name;
 							printf("%s logged in\n", ((LoginMessage*)recievedMessage)->client_name.c_str());
 							break;
+						}
 						case JOIN: {
 							JoinMessage join = *((JoinMessage*)recievedMessage);
 							_room_m.addMember(join.room_name, client);
 							printf("%s added to %s\n", client->name.c_str(), join.room_name.c_str());
-							_room_m.printRooms();
+							//_room_m.printRooms();
 							break;
 						}						
 						case LEAVE: {
 							LeaveMessage* leave = (LeaveMessage*)recievedMessage;
 							_room_m.removeMember(leave->room_name, client);
 							printf("%s left %s\n", client->name.c_str(), leave->room_name.c_str());
-							_room_m.printRooms();
+							//_room_m.printRooms();
 							break;
+						}
+						case SEND: {
+							UserMessage *userMessage = (UserMessage*)recievedMessage;
+							printf("%s sends %s: %s\n", client->name.c_str(), 
+								userMessage->room_name.c_str(),
+								userMessage->message.c_str());
+							std::vector<ClientInfo*> *clients = _room_m.getMembers(userMessage->room_name);
+							for (int c = 0; c < clients->size(); c++) {
+								ClientInfo* client = clients->at(c);
+
+								RecieveMessage* recv = new RecieveMessage();
+								recv->sender_name = client->name;
+								recv->room_name = userMessage->room_name;
+								recv->message = userMessage->message;
+								SendBuffer buffer = writeMessage(recv);
+
+								printf("Echoing message...\n");
+								iResult = send(client->socket, (char*)buffer.getBuffer(), buffer.getDataLength(), 0);
+								if (iResult == SOCKET_ERROR)
+								{
+									printf("send() failed with error: %d\n", WSAGetLastError());
+								}
+								printf("RECIEVE. Bytes sent: %d\n", iResult);
+							}
 						}
 					}
 				}
