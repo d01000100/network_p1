@@ -1,6 +1,7 @@
 #define WIN32_LEAN_AND_MEAN			// Strip rarely used calls
 
 #include "ProtocolManager.h"
+#include "RoomManager.h"
 
 #include <Windows.h>
 #include <WinSock2.h>
@@ -8,6 +9,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string>
+#include <vector>
+#include <map>
 #include <conio.h>
 #include <iostream>
 
@@ -19,18 +22,9 @@
 #define ESCAPE 27
 #define RETURN 8
 
-// Client structure
-struct ClientInfo {
-	SOCKET socket;
-
-	// Buffer information (this is basically you buffer class)
-	WSABUF dataBuf;
-	RecieveBuffer recvBuf;
-	std::string name;
-};
-
 int TotalClients = 0;
 ClientInfo* ClientArray[FD_SETSIZE];
+RoomManager _room_m;
 
 bool _should_close = false;
 
@@ -51,6 +45,9 @@ void disconnectClient(int index) {
 	ClientInfo* client = ClientArray[index];
 	printf("Client %s with socket %lu disconnected\n", client->name.c_str(), client->socket);
 	closesocket(client->socket);
+
+	_room_m.deleteMember(client);
+	_room_m.printRooms();
 
 	for (int j = index; j < TotalClients; j++) {
 		ClientArray[j] = ClientArray[j + 1];
@@ -250,10 +247,24 @@ int main(int argc, char** argv)
 					Message* recievedMessage = readMessage(client->recvBuf);
 
 					switch (recievedMessage->type) {
-					case LOGIN:
-						printf("%s logged in\n", ((LoginMessage*)recievedMessage)->client_name.c_str());
-						client->name = ((LoginMessage*)recievedMessage)->client_name;
-						break;
+						case LOGIN:
+							client->name = ((LoginMessage*)recievedMessage)->client_name;
+							printf("%s logged in\n", ((LoginMessage*)recievedMessage)->client_name.c_str());
+							break;
+						case JOIN: {
+							JoinMessage join = *((JoinMessage*)recievedMessage);
+							_room_m.addMember(join.room_name, client);
+							printf("%s added to %s\n", client->name.c_str(), join.room_name.c_str());
+							_room_m.printRooms();
+							break;
+						}						
+						case LEAVE: {
+							LeaveMessage* leave = (LeaveMessage*)recievedMessage;
+							_room_m.removeMember(leave->room_name, client);
+							printf("%s left %s\n", client->name.c_str(), leave->room_name.c_str());
+							_room_m.printRooms();
+							break;
+						}
 					}
 				}
 				else {
