@@ -22,7 +22,7 @@
 #define ESCAPE 27
 #define RETURN 8
 
-int TotalClients = 0;
+int TotalClients = 0, clients = 0;
 ClientInfo* ClientArray[FD_SETSIZE];
 RoomManager _room_m;
 
@@ -36,6 +36,14 @@ void key_listen() {
 		if (ch == ESCAPE)
 		{
 			_should_close = true;
+		}
+
+		if (ch == 9) { // Tab 
+			printf("clients: %d, TotalClients: %d\n", clients, TotalClients);
+			for (int i = 0; i < TotalClients; i++) {
+				printf("Client: %s, socket: %llu\n", ClientArray[i]->name.c_str(), ClientArray[i]->socket);
+			}
+			_room_m.printRooms();
 		}
 	}
 }
@@ -149,7 +157,6 @@ int main(int argc, char** argv)
 	}
 
 	FD_SET ReadSet;
-	int total;
 	DWORD flags;
 	DWORD RecvBytes;
 	timeval timeVal;
@@ -172,8 +179,8 @@ int main(int argc, char** argv)
 
 		// Call our select function to find the sockets that
 		// require our attention
-		total = select(0, &ReadSet, NULL, NULL, &timeVal);
-		if (total == SOCKET_ERROR)
+		clients = select(0, &ReadSet, NULL, NULL, &timeVal);
+		if (clients == SOCKET_ERROR)
 		{
 			printf("select() failed with error: %d\n", WSAGetLastError());
 			return 1;
@@ -182,7 +189,7 @@ int main(int argc, char** argv)
 		// Check for arriving connections on the listening socket
 		if (FD_ISSET(listenSocket, &ReadSet))
 		{
-			total--;
+			clients--;
 			acceptSocket = accept(listenSocket, NULL, NULL);
 
 			if (acceptSocket == INVALID_SOCKET)
@@ -209,7 +216,7 @@ int main(int argc, char** argv)
 			}
 		}
 
-		for (int i = 0; i < total && i < TotalClients; i++)
+		for (int i = 0; i < TotalClients; i++)
 		{
 			ClientInfo* client = ClientArray[i];
 
