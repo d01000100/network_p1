@@ -18,5 +18,16 @@
     <ClCompile Include="server_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RoomManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="RoomManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="data_structs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
