@@ -213,7 +213,6 @@ int main(int argc, char** argv)
 			closeServer();
 			return 1;
 		}
-		_debug_info.clients = total;
 
 		// Check for arriving connections on the listening socket
 		if (FD_ISSET(listenSocket, &ReadSet))

@@ -24,7 +24,23 @@
 #define BACKSPACE 8
 
 std::vector<std::string> receivedMessages;
+std::string client_name;
+std::string* message = new std::string();
 RecieveBuffer rcvBuffer;
+
+void printScreen()
+{
+	system("cls");
+	std::cout << "Welcome " << client_name << "!!\n" << std::endl;
+	std::cout << "======================================\n" << std::endl;
+	std::cout << "Received Messages: \n" << std::endl;
+	for (int i = 0; i < receivedMessages.size(); i++)
+	{
+		printf("$ %s\n", receivedMessages[i].c_str());
+	}
+	std::cout << "\n\n\n" << std::endl;
+	printf("Your Message: %s", message->c_str());
+}
 
 SendBuffer determineMsgType(std::string msgType, std::string message, std::string roomName = "")
 {
@@ -155,7 +171,6 @@ int main(int argc, char** argv)
 	printf("Successfully connected to the server on socket %d!\n", (int)connectSocket);
 
 	// Make user login
-	std::string client_name;
 	std::cout << "Input username:\t";
 	std::getline(std::cin, client_name);
 
@@ -183,7 +198,6 @@ int main(int argc, char** argv)
 
 	// #3 write & read
 	bool should_exit = false;
-	std::string* message = new std::string();
 	DWORD NonBlock = 1;
 
 	while (!should_exit)
@@ -194,16 +208,22 @@ int main(int argc, char** argv)
 			if (ch == ESCAPE)
 			{
 				should_exit = true;
+				system("cls");
 			}
-			if (ch == BACKSPACE)
+			else if (ch == BACKSPACE)
 			{
-				message->pop_back();
+				if (message->size() > 0)
+				{
+					message->pop_back();
+				}
+				printScreen();
 			}
-			if (ch == RETURN)
+			else if (ch == RETURN)
 			{
 
 				SendBuffer theSecondBuffer = checkMessage(*message);
 				message->clear();
+				printScreen();
 				if (theSecondBuffer.getDataLength()==0) { continue; }
 
 				iResult = send(connectSocket, (char*)theSecondBuffer.getBuffer(), theSecondBuffer.getDataLength(), 0);
@@ -220,16 +240,7 @@ int main(int argc, char** argv)
 			else
 			{
 				message->push_back(ch);
-				system("cls");
-				std::cout << "Welcome " << client_name << "!!\n" << std::endl;
-				std::cout << "======================================\n" << std::endl;
-				std::cout << "Received Messages: \n" << std::endl;
-				for (int i = 0; i < receivedMessages.size(); i++)
-				{
-					printf("$ %s\n", receivedMessages[i].c_str());
-				}
-				std::cout << "\n\n\n" << std::endl;
-				printf("Your Message: %s", message->c_str());
+				printScreen();
 			}
 		}
 
@@ -249,19 +260,20 @@ int main(int argc, char** argv)
 		iResult = recv(connectSocket, (char*)rcvBuffer.getBuffer(), DEFAULT_BUFLEN, 0);
 		if (iResult > 0)
 		{
-			printf("Bytes received: %d\n", iResult);
+			// printf("Bytes received: %d\n", iResult);
 			rcvBuffer.setDataRecieved(iResult);
 			Message* MSG = readMessage(rcvBuffer);
 			if (MSG->type == RECIEVE)
 			{
 				RecieveMessage* rcvMSG = (RecieveMessage*)MSG;
 				std::string tempString;
-				tempString += (rcvMSG->room_name + "." + rcvMSG->sender_name + ":\t" + rcvMSG->message);
+				tempString += (rcvMSG->room_name + "." + rcvMSG->sender_name + ": " + rcvMSG->message);
 				receivedMessages.push_back(tempString);
 				if(receivedMessages.size() > 3)
 				{ // erase the 1st element
 					receivedMessages.erase(receivedMessages.begin());
 				}
+				printScreen();
 			}
 		}
 		else if (iResult == 0)
