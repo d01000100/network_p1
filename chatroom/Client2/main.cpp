@@ -12,11 +12,61 @@
 #include <string>
 #include <vector>
 
+
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
 
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "5150"
+
+#define ESCAPE 27
+#define RETURN 13
+
+SendBuffer* determineMsgType(std::string msgType, std::string message, std::string roomName = "")
+{
+	if (".send" == msgType)
+	{
+		UserMessage MSG;
+		MSG.room_name = roomName;
+		MSG.message = message;
+		return &writeMessage(&MSG);
+	}
+	if (".join" == msgType)
+	{
+		JoinMessage MSG;
+		MSG.room_name = roomName;
+		return &writeMessage(&MSG);
+	}
+	if (".leave" == msgType)
+	{
+		LeaveMessage MSG;
+		MSG.room_name = roomName;
+		return &writeMessage(&MSG);
+	}
+	return NULL;
+}
+
+SendBuffer* checkMessage(std::string message)
+{
+	printf("checking this message...\n");
+	// Look for protocol
+	std::string delimiter = " ";
+
+	size_t pos = 0;
+	std::string msgType,roomName;
+
+	pos = message.find(delimiter);
+	msgType = message.substr(0, pos);
+	//std::cout << msgType << std::endl;
+	message.erase(0, pos + delimiter.length());
+
+	pos = message.find(delimiter);
+	roomName = message.substr(0, pos);
+	//std::cout << roomName << std::endl;
+	message.erase(0, pos + delimiter.length());
+
+	return determineMsgType(msgType,message,roomName);
+}
 
 int main(int argc, char** argv)
 {
