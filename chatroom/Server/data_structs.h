@@ -15,5 +15,5 @@ struct ClientInfo {
 };
 
 struct Room {
-	std::vector<ClientInfo*> *members;
+	std::vector<ClientInfo*> *members = new std::vector<ClientInfo*>;
 };

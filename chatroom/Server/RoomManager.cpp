@@ -48,3 +48,26 @@ void RoomManager::printRooms() {
 		printf("\n");
 	}
 }
+
+bool RoomManager::broadcastMessage(RecieveMessage* message) {
+	if (rooms.find(message->room_name) != rooms.end()) {
+		
+		std::vector<ClientInfo*>* clients = getMembers(message->room_name);
+		for (int c = 0; c < clients->size(); c++) {
+			ClientInfo* client = clients->at(c);
+
+			SendBuffer buffer = writeMessage(message);
+
+			printf("Echoing message...\n");
+			int iResult = send(client->socket, (char*)buffer.getBuffer(), buffer.getDataLength(), 0);
+			if (iResult == SOCKET_ERROR)
+			{
+				printf("send() failed with error: %d\n", WSAGetLastError());
+			}
+			printf("RECIEVE. Bytes sent: %d\n", iResult);
+		}
+
+		return true;
+	}
+	return false;
+}

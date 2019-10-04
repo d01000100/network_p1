@@ -109,7 +109,6 @@ int main(int argc, char** argv)
 	}
 
 	// #1 Socket
-
 	struct addrinfo* addrResult = NULL;
 	struct addrinfo hints;
 
@@ -297,41 +296,45 @@ int main(int argc, char** argv)
 							JoinMessage join = *((JoinMessage*)recievedMessage);
 							_room_m.addMember(join.room_name, client);
 							printf("%s added to %s\n", client->name.c_str(), join.room_name.c_str());
-							//_room_m.printRooms();
+
+							RecieveMessage* recv = new RecieveMessage();
+							recv->sender_name = "server";
+							recv->room_name = join.room_name;
+							recv->message = client->name + " joined the room.";
+							_room_m.broadcastMessage(recv);
+							delete recv;
 							break;
 						}						
 						case LEAVE: {
 							LeaveMessage* leave = (LeaveMessage*)recievedMessage;
 							_room_m.removeMember(leave->room_name, client);
 							printf("%s left %s\n", client->name.c_str(), leave->room_name.c_str());
-							//_room_m.printRooms();
+
+							RecieveMessage* recv = new RecieveMessage();
+							recv->sender_name = "server";
+							recv->room_name = leave->room_name;
+							recv->message = client->name + " left the room.";
+							_room_m.broadcastMessage(recv);
+							delete recv;
+
 							break;
 						}
 						case SEND: {
 							UserMessage *userMessage = (UserMessage*)recievedMessage;
-							printf("%s sends %s: %s\n", client->name.c_str(), 
-								userMessage->room_name.c_str(),
-								userMessage->message.c_str());
-							std::vector<ClientInfo*> *clients = _room_m.getMembers(userMessage->room_name);
-							for (int c = 0; c < clients->size(); c++) {
-								ClientInfo* client = clients->at(c);
+							
+							RecieveMessage* recv = new RecieveMessage();
+							recv->sender_name = client->name;
+							recv->room_name = userMessage->room_name;
+							recv->message = userMessage->message;
+							printf("%s sends %s: %s\n", recv->sender_name.c_str(),
+								recv->room_name.c_str(),
+								recv->message.c_str());
 
-								RecieveMessage* recv = new RecieveMessage();
-								recv->sender_name = client->name;
-								recv->room_name = userMessage->room_name;
-								recv->message = userMessage->message;
-								SendBuffer buffer = writeMessage(recv);
-
-								printf("Echoing message...\n");
-								iResult = send(client->socket, (char*)buffer.getBuffer(), buffer.getDataLength(), 0);
-								if (iResult == SOCKET_ERROR)
-								{
-									printf("send() failed with error: %d\n", WSAGetLastError());
-								}
-								printf("RECIEVE. Bytes sent: %d\n", iResult);
-							}
+							_room_m.broadcastMessage(recv);
+							delete recv;
 						}
 					}
+					delete recievedMessage;
 				}
 				else {
 					disconnectClient(i);

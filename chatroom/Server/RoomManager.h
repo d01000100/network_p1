@@ -15,5 +15,6 @@ public:
 	void deleteMember(ClientInfo* client);
 	std::vector<ClientInfo*>* getMembers(std::string room_name);
 	void printRooms();
+	bool broadcastMessage(RecieveMessage* message);
 };
 
