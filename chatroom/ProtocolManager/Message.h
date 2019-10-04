@@ -32,11 +32,11 @@ public:
 	LeaveMessage();
 };
 
-class SendMessage : public Message {
+class UserMessage : public Message {
 public:
 	std::string room_name;
 	std::string message;
-	SendMessage();
+	UserMessage();
 };
 
 class RecieveMessage : public Message {

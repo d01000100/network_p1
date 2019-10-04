@@ -42,7 +42,7 @@ SendBuffer writeMessage(LeaveMessage* message) {
 	return buffer;
 }
 
-SendBuffer writeMessage(SendMessage* message) {
+SendBuffer writeMessage(UserMessage* message) {
 	//      int            int       int      string      int     string
 	//[packet_length][message_type][length] [room_name] [length] [message]
 	unsigned int room_length = message->room_name.length();
@@ -117,7 +117,7 @@ Message* readMessage(RecieveBuffer buffer) {
 		case SEND: {
 			//  int      string      int     string
 			//[length] [room_name] [length] [message]
-			SendMessage* sendM = new SendMessage();
+			UserMessage* sendM = new UserMessage();
 			int room_length = buffer.readInt();
 			sendM->room_name = buffer.readString(room_length);
 			int message_length = buffer.readInt();

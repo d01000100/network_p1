@@ -36,7 +36,7 @@ LeaveMessage::LeaveMessage() {
 	type = LEAVE;
 }
 
-SendMessage::SendMessage() {
+UserMessage::UserMessage() {
 	type = SEND;
 }
 
