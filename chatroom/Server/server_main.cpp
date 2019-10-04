@@ -28,9 +28,8 @@ RoomManager _room_m;
 
 bool _should_close = false;
 
-struct {
-	int clients, totalClients;
-} _debug_info;
+SOCKET listenSocket = INVALID_SOCKET;
+SOCKET acceptSocket = INVALID_SOCKET;
 
 void key_listen() {
 	if (_kbhit())
@@ -66,6 +65,33 @@ void disconnectClient(int index) {
 	TotalClients--;
 }
 
+void closeServer() {
+	for (int i = 0; i < TotalClients; i++) {
+		if (ClientArray[i]->socket != INVALID_SOCKET) {
+			closesocket(ClientArray[i]->socket);
+			if (ClientArray[i]->socket == SOCKET_ERROR) {
+				printf("error: %d while closing socket from %d client\n",
+					WSAGetLastError(), i);
+			}
+		}
+	}
+	if (listenSocket != INVALID_SOCKET) {
+		closesocket(listenSocket);
+		if (listenSocket == SOCKET_ERROR) {
+			printf("error: %d while closing listenSocket\n",
+				WSAGetLastError());
+		}
+	}
+	if (acceptSocket != INVALID_SOCKET) {
+		closesocket(acceptSocket);
+		if (acceptSocket == SOCKET_ERROR) {
+			printf("error: %d while closing acceptSocket\n",
+				WSAGetLastError());
+		}
+	}
+	WSACleanup();
+}
+
 int main(int argc, char** argv)
 {
 
@@ -82,8 +108,6 @@ int main(int argc, char** argv)
 	}
 
 	// #1 Socket
-	SOCKET listenSocket = INVALID_SOCKET;
-	SOCKET acceptSocket = INVALID_SOCKET;
 
 	struct addrinfo* addrResult = NULL;
 	struct addrinfo hints;
@@ -115,7 +139,7 @@ int main(int argc, char** argv)
 		// https://docs.microsoft.com/en-us/windows/win32/winsock/windows-sockets-error-codes-2
 		printf("socket() failed with error %d\n", WSAGetLastError());
 		freeaddrinfo(addrResult);
-		WSACleanup();
+		closeServer();
 		return 1;
 	}
 
@@ -129,8 +153,7 @@ int main(int argc, char** argv)
 	{
 		printf("bind failed with error: %d\n", WSAGetLastError());
 		freeaddrinfo(addrResult);
-		closesocket(listenSocket);
-		WSACleanup();
+		closeServer();
 		return 1;
 	}
 
@@ -142,8 +165,7 @@ int main(int argc, char** argv)
 	if (iResult == SOCKET_ERROR)
 	{
 		printf("listen() failed with error %d\n", WSAGetLastError());
-		closesocket(listenSocket);
-		WSACleanup();
+		closeServer();
 		return 1;
 	}
 
@@ -154,8 +176,7 @@ int main(int argc, char** argv)
 	if (iResult == SOCKET_ERROR)
 	{
 		printf("ioctlsocket() failed with error %d\n", WSAGetLastError());
-		closesocket(listenSocket);
-		WSACleanup();
+		closeServer();
 		return 1;
 	}
 
@@ -189,6 +210,7 @@ int main(int argc, char** argv)
 		if (total == SOCKET_ERROR)
 		{
 			printf("select() failed with error: %d\n", WSAGetLastError());
+			closeServer();
 			return 1;
 		}
 		_debug_info.clients = total;
@@ -267,7 +289,7 @@ int main(int argc, char** argv)
 					Message* recievedMessage = readMessage(client->recvBuf);
 
 					switch (recievedMessage->type) {
-					case LOGIN: {
+						case LOGIN: {
 							client->name = ((LoginMessage*)recievedMessage)->client_name;
 							printf("%s logged in\n", ((LoginMessage*)recievedMessage)->client_name.c_str());
 							break;
@@ -323,14 +345,12 @@ int main(int argc, char** argv)
 	iResult = shutdown(acceptSocket, SD_SEND);
 	if (iResult == SOCKET_ERROR) {
 		printf("shutdown failed with error: %d\n", WSAGetLastError());
-		closesocket(acceptSocket);
-		WSACleanup();
+		closeServer();
 		return 1;
 	}
 
 	// cleanup
-	closesocket(acceptSocket);
-	WSACleanup();
+	closeServer();
 
 	return 0;
 }

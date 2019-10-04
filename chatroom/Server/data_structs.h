@@ -6,7 +6,7 @@
 
 // Client structure
 struct ClientInfo {
-	SOCKET socket;
+	SOCKET socket = INVALID_SOCKET;
 
 	// Buffer information (this is basically you buffer class)
 	WSABUF dataBuf;
