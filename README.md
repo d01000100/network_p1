@@ -4,6 +4,8 @@ Chat app with channels and deserialization
 - José Daniel Casado Aguilar
 - David Zúñiga Navarro
 
+**Showcase video**: https://www.youtube.com/watch?v=ZBWJCDyTh_s
+
 ## Build instructions
 
 1. Open the file `chatroom\chatroom.sln` with Visual Studio 2019.
