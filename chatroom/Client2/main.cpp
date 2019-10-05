@@ -44,8 +44,8 @@ void printScreen()
 
 SendBuffer determineMsgType(std::string msgType, std::string message, std::string roomName = "")
 {
-	std::string debug = "type: " + msgType + ", room: " + roomName + ", message: " + message + "\n";
-	receivedMessages.push_back(debug);
+	//std::string debug = "type: " + msgType + ", room: " + roomName + ", message: " + message + "\n";
+	//receivedMessages.push_back(debug);
 	SendBuffer newBuff;
 
 	if (".send" == msgType)
