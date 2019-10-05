@@ -268,10 +268,11 @@ int main(int argc, char** argv)
 				RecieveMessage* rcvMSG = (RecieveMessage*)MSG;
 				std::string tempString;
 				tempString += (rcvMSG->room_name + "." + rcvMSG->sender_name + ": " + rcvMSG->message);
-				receivedMessages.push_back(tempString);
-				if(receivedMessages.size() > 3)
+				
+				(&receivedMessages)->push_back(tempString);
+				if((&receivedMessages)->size() > 6)
 				{ // erase the 1st element
-					receivedMessages.erase(receivedMessages.begin());
+					(&receivedMessages)->erase((&receivedMessages)->begin());
 				}
 				printScreen();
 			}
