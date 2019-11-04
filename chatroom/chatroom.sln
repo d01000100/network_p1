@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client2", "Client2\Client2.
 		{F11AD382-E51A-4024-8F79-79E0F12393F4} = {F11AD382-E51A-4024-8F79-79E0F12393F4}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AuthServer", "AuthServer\AuthServer.vcxproj", "{DAF0C897-0933-4E43-930D-5C993975F0DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -57,6 +59,14 @@ Global
 		{BC01C2F2-9ADD-4C2B-96C1-DFB9EF78B2B9}.Release|x64.Build.0 = Release|x64
 		{BC01C2F2-9ADD-4C2B-96C1-DFB9EF78B2B9}.Release|x86.ActiveCfg = Release|Win32
 		{BC01C2F2-9ADD-4C2B-96C1-DFB9EF78B2B9}.Release|x86.Build.0 = Release|Win32
+		{DAF0C897-0933-4E43-930D-5C993975F0DC}.Debug|x64.ActiveCfg = Debug|x64
+		{DAF0C897-0933-4E43-930D-5C993975F0DC}.Debug|x64.Build.0 = Debug|x64
+		{DAF0C897-0933-4E43-930D-5C993975F0DC}.Debug|x86.ActiveCfg = Debug|Win32
+		{DAF0C897-0933-4E43-930D-5C993975F0DC}.Debug|x86.Build.0 = Debug|Win32
+		{DAF0C897-0933-4E43-930D-5C993975F0DC}.Release|x64.ActiveCfg = Release|x64
+		{DAF0C897-0933-4E43-930D-5C993975F0DC}.Release|x64.Build.0 = Release|x64
+		{DAF0C897-0933-4E43-930D-5C993975F0DC}.Release|x86.ActiveCfg = Release|Win32
+		{DAF0C897-0933-4E43-930D-5C993975F0DC}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
