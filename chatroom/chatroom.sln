@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client2", "Client2\Client2.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AuthServer", "AuthServer\AuthServer.vcxproj", "{DAF0C897-0933-4E43-930D-5C993975F0DC}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AuthProtocol", "AuthProtocol\AuthProtocol.vcxproj", "{DE806372-BB2A-4E6B-8138-F274A8EC5D27}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -67,6 +69,14 @@ Global
 		{DAF0C897-0933-4E43-930D-5C993975F0DC}.Release|x64.Build.0 = Release|x64
 		{DAF0C897-0933-4E43-930D-5C993975F0DC}.Release|x86.ActiveCfg = Release|Win32
 		{DAF0C897-0933-4E43-930D-5C993975F0DC}.Release|x86.Build.0 = Release|Win32
+		{DE806372-BB2A-4E6B-8138-F274A8EC5D27}.Debug|x64.ActiveCfg = Debug|x64
+		{DE806372-BB2A-4E6B-8138-F274A8EC5D27}.Debug|x64.Build.0 = Debug|x64
+		{DE806372-BB2A-4E6B-8138-F274A8EC5D27}.Debug|x86.ActiveCfg = Debug|Win32
+		{DE806372-BB2A-4E6B-8138-F274A8EC5D27}.Debug|x86.Build.0 = Debug|Win32
+		{DE806372-BB2A-4E6B-8138-F274A8EC5D27}.Release|x64.ActiveCfg = Release|x64
+		{DE806372-BB2A-4E6B-8138-F274A8EC5D27}.Release|x64.Build.0 = Release|x64
+		{DE806372-BB2A-4E6B-8138-F274A8EC5D27}.Release|x86.ActiveCfg = Release|Win32
+		{DE806372-BB2A-4E6B-8138-F274A8EC5D27}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
