@@ -1,0 +1,34 @@
+syntax = "proto2";
+
+package auth_protocol;
+
+enum Action {
+    SIGN_UP = 0;
+    LOGIN = 1;
+}
+
+enum Error {
+    REPEATED_USERNAME = 0;
+    INVALID_CREDENTIALS = 1;
+    INTERNAL_SERVER_ERROR = 2;
+}
+
+message Request {
+    required int32 length = 1;
+    required Action action = 2;
+    required string username = 3;
+    required string plaintextPassword = 4;
+}
+
+message ResponseOK {
+    required int32 length = 1;
+    required Action action = 2;
+    required string username = 3;
+}
+
+message ResponseError {
+    required int32 length = 1;
+    required Action action = 2;
+    required string username = 3;
+    required Error error = 4;
+}
