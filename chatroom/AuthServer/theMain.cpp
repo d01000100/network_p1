@@ -13,6 +13,12 @@
 #include <ctime> 
 #include <time.h>
 
+#include "AuthServer.h"
+
+#define ESCAPE 27
+#define RETURN 8
+#define DEFAULT_BUFLEN 512
+
 /*
 $(SolutionDir)dev\include;
 $(SolutionDir)dev\lib\$(Platform)\$(Configuration);
@@ -29,6 +35,8 @@ std::string server = "127.0.0.1:3306";
 std::string username = "davezn";
 std::string password = "hola";
 std::string schema = "casado_zuniga_project2";
+
+bool _should_close = false;
 
 
 void CreateUser(std::string email, std::string password)
@@ -90,71 +98,56 @@ void CreateUser(std::string email, std::string password)
 	}
 }
 
+void key_listen() {
+	if (_kbhit())
+	{
+		char ch = _getch();
+		printf("%d\n", ch);
+		if (ch == ESCAPE)
+		{
+			_should_close = true;
+		}
+	}
+}
+
 int main(int argc, char** argv)
 {
-	try
-	{
-		driver = get_driver_instance();
-		con = driver->connect(server, username, password);
-		printf("Successfully connected to our database!\n");
+	AuthServer authServer;
 
-		con->setSchema(schema);
-		printf("Successfully set our schema!\n");
+	if (!authServer.init()) { return 1; }
+
+	while (!_should_close) {
+
+		char buffer[DEFAULT_BUFLEN];
+
+		int iResult = authServer.recieveMessage(buffer);
+
+		if (iResult > 0) {
+
+			std::string recv_message;
+
+			for (int i = 0; i < iResult; i++) {
+				recv_message += buffer[i];
+			}
+
+			auth_protocol::Request* message = (auth_protocol::Request*)readAuthMessage(recv_message);
+
+			if (message) {
+				printf("recibi un %s\n", message->GetTypeName().c_str());
+
+				printf("username: %s, password: %s\n", 
+					message->username().c_str(),
+					message->plaintextpassword().c_str());
+			}
+
+		}
+		else if (iResult < 0) {
+			_should_close = true;
+		}
 	}
-	catch (sql::SQLException & exception)
-	{
-		std::cout << "# ERR: SQLException in " << __FILE__;
-		std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
-		std::cout << "# ERR: " << exception.what();
-		std::cout << " (MySQL error code: " << exception.getErrorCode();
-		std::cout << ", SQLState: " << exception.getSQLState() << ")" << std::endl;
-		system("Pause");
-		return 1;
-	}
 
-	//// Medium example: Retrieve the employees table
-	//// SELECT * FROM employees;
-	//try
-	//{
-	//	// #1 Prepare our statement
-	//	pstmt = con->prepareStatement("select * from user,web_auth where (user.id = web_auth.userId);");
-	//	// id last_login creation_date id email salt hashed_password userId
-	//	// #2 Execute our statement
-	//	rs = pstmt->executeQuery();
 
-	//	// #3 Show the result
-	//	if (rs->rowsCount() > 0)
-	//	{
-	//		printf("%d rows returned!\n", (int)rs->rowsCount());
+	authServer.closeServer();
 
-	//		printf("Employee List:\n");
-	//		while (rs->next())
-	//		{
-	//			std::string email = rs->getString(5);
-	//			std::string hashed_password = rs->getString(7);
-
-	//			std::cout << "email: " << email << std::endl;
-	//			std::cout << "hashed_password: " << hashed_password << std::endl;
-	//		}
-	//	}
-	//	else
-	//	{
-	//		printf("No rows returned!\n");
-	//	}
-	//}
-	//catch (sql::SQLException & exception)
-	//{
-	//	std::cout << "# ERR: SQLException in " << __FILE__;
-	//	std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
-	//	std::cout << "# ERR: " << exception.what();
-	//	std::cout << " (MySQL error code: " << exception.getErrorCode();
-	//	std::cout << ", SQLState: " << exception.getSQLState() << ")" << std::endl;
-	//	system("Pause");
-	//	return 1;
-	//}
-
-	CreateUser("robin", "robin");
-
-	system("Pause");
 	return 0;
 }
