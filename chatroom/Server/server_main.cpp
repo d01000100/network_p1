@@ -2,6 +2,7 @@
 
 #include "ProtocolManager.h"
 #include "RoomManager.h"
+#include "AuthClient.h"
 
 #include <Windows.h>
 #include <WinSock2.h>
@@ -13,6 +14,7 @@
 #include <map>
 #include <conio.h>
 #include <iostream>
+#include <bcrypt.h>
 
  //Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
@@ -25,6 +27,7 @@
 int TotalClients = 0, clients = 0;
 ClientInfo* ClientArray[FD_SETSIZE];
 RoomManager _room_m;
+AuthClient authClient;
 
 bool _should_close = false;
 
@@ -54,7 +57,7 @@ void key_listen() {
 void disconnectClient(int index) {
 
 	ClientInfo* client = ClientArray[index];
-	printf("Client %s with socket %lu disconnected\n", client->name.c_str(), client->socket);
+	printf("Client %s with socket %ud disconnected\n", client->name.c_str(), client->socket);
 	closesocket(client->socket);
 
 	_room_m.deleteMember(client);
@@ -95,7 +98,6 @@ void closeServer() {
 
 int main(int argc, char** argv)
 {
-
 	WSADATA wsaData;
 	int iResult;
 
@@ -186,9 +188,16 @@ int main(int argc, char** argv)
 	timeval timeVal;
 	timeVal.tv_sec = 1;
 
+	if (!authClient.init()) {
+		closeServer();
+		return 1;
+	}
+
+	authClient.sendLogIn("foo", "bar");
+
 	printf("Server ready!\n");
 
-	while (!_should_close)
+	while (false && !_should_close)
 	{
 		key_listen();
 		// Initialize our read set
@@ -284,6 +293,7 @@ int main(int argc, char** argv)
 				{
 					printf("Recieved %d bytes\n", RecvBytes);
 					client->recvBuf.setDataRecieved(RecvBytes);
+
 					Message* recievedMessage = readMessage(client->recvBuf);
 
 					switch (recievedMessage->type) {
@@ -343,16 +353,9 @@ int main(int argc, char** argv)
 		}
 	}
 
-	// #6 close
-	iResult = shutdown(acceptSocket, SD_SEND);
-	if (iResult == SOCKET_ERROR) {
-		printf("shutdown failed with error: %d\n", WSAGetLastError());
-		closeServer();
-		return 1;
-	}
-
 	// cleanup
 	closeServer();
 
+	system("Pause");
 	return 0;
 }

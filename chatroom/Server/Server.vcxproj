@@ -143,10 +143,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AuthClient.cpp" />
     <ClCompile Include="RoomManager.cpp" />
     <ClCompile Include="server_main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AuthClient.h" />
     <ClInclude Include="data_structs.h" />
     <ClInclude Include="RoomManager.h" />
   </ItemGroup>
