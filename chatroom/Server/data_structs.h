@@ -12,6 +12,7 @@ struct ClientInfo {
 	WSABUF dataBuf;
 	RecieveBuffer recvBuf;
 	std::string name;
+	bool is_logged_in = false;
 };
 
 struct Room {

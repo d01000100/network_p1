@@ -11,9 +11,11 @@ class AuthClient
 {
 private:
 	SOCKET connectSocket;
+	DWORD Flags, NonBlock;
 public:
+	AuthClient();
 	bool init();
-	bool sendSignUp(std::string username, std::string password);
-	bool sendLogIn(std::string username, std::string password);
+	bool sendMessage(std::string serializedMessage);
+	google::protobuf::Message* recieveMessage();
 };
 

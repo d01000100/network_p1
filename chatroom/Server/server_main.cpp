@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string>
+#include <sstream>
 #include <vector>
 #include <map>
 #include <conio.h>
@@ -94,6 +95,128 @@ void closeServer() {
 		}
 	}
 	WSACleanup();
+}
+
+void processMessages(ClientInfo* client, Message* recievedMessage) {
+	switch (recievedMessage->type) {
+	case LOGIN: {
+		std::string login_info = ((LoginMessage*)recievedMessage)->client_name;
+
+		std::istringstream iss(login_info);
+
+		// During login, the username and password are recieved in a single
+		// string separated by spaces
+		std::string username, password;
+		iss >> username; iss >> password;
+
+		authClient.sendMessage(writeLoginRequest( username, password));
+
+		printf("Requesting login of %s\n", username.c_str());
+		break;
+	}
+	case JOIN: {
+		JoinMessage join = *((JoinMessage*)recievedMessage);
+		_room_m.addMember(join.room_name, client);
+		printf("%s added to %s\n", client->name.c_str(), join.room_name.c_str());
+
+		RecieveMessage* recv = new RecieveMessage();
+		recv->sender_name = "server";
+		recv->room_name = join.room_name;
+		recv->message = client->name + " joined the room.";
+		_room_m.broadcastMessage(recv);
+		delete recv;
+		break;
+	}
+	case LEAVE: {
+		LeaveMessage* leave = (LeaveMessage*)recievedMessage;
+		_room_m.removeMember(leave->room_name, client);
+		printf("%s left %s\n", client->name.c_str(), leave->room_name.c_str());
+
+		RecieveMessage* recv = new RecieveMessage();
+		recv->sender_name = "server";
+		recv->room_name = leave->room_name;
+		recv->message = client->name + " left the room.";
+		_room_m.broadcastMessage(recv);
+		delete recv;
+
+		break;
+	}
+	case SEND: {
+		UserMessage* userMessage = (UserMessage*)recievedMessage;
+
+		RecieveMessage* recv = new RecieveMessage();
+		recv->sender_name = client->name;
+		recv->room_name = userMessage->room_name;
+		recv->message = userMessage->message;
+		printf("%s sends %s: %s\n", recv->sender_name.c_str(),
+			recv->room_name.c_str(),
+			recv->message.c_str());
+
+		_room_m.broadcastMessage(recv);
+		delete recv;
+	}
+	}
+}
+
+ClientInfo* findClientByUsername(std::string username)
+{
+	for (int c = 0; c < TotalClients; c++) {
+		if (ClientArray[c]->name == username) {
+			return ClientArray[c];
+		}
+	}
+
+	return NULL;
+}
+
+void processAuthMessage(google::protobuf::Message* authMessage) 
+{
+	std::string messageType = authMessage->GetTypeName();
+	if (messageType == "auth_protocol.ResponseOK") {
+		auth_protocol::ResponseOK* message = (auth_protocol::ResponseOK*)authMessage;
+
+		switch (message->action()) {
+		case auth_protocol::SIGN_UP:
+			printf("User created with username %s\n",
+				message->username().c_str());
+			break;
+		case auth_protocol::LOGIN:
+			printf("User %s logged in\n",
+				message->username().c_str());
+			ClientInfo* client = findClientByUsername(message->username());
+			if (client) {
+				client->is_logged_in = true;
+			}
+			break;
+		}
+	}
+	if (messageType == "auth_protocol.ResponseError") {
+		auth_protocol::ResponseError* message = (auth_protocol::ResponseError*)authMessage;
+		std::string error;
+
+		switch (message->error()) {
+		case auth_protocol::REPEATED_USERNAME:
+			error = "The username is already taken";
+			break;
+		case auth_protocol::INVALID_CREDENTIALS:
+			error = "The username or password are not valid";
+			break;
+		case auth_protocol::INTERNAL_SERVER_ERROR:
+			error = "Internal Server Error";
+			break;
+		}
+
+		switch (message->action()) {
+		case auth_protocol::SIGN_UP:
+			printf("Request to create a user with email %s failed because %s\n",
+				message->username().c_str(), error.c_str());
+			break;
+		case auth_protocol::LOGIN:
+			printf("Request to login a user with email %s failed becasue %s\n",
+				message->username().c_str(), error.c_str());
+			break;
+		}
+	}
 }
 
 int main(int argc, char** argv)
@@ -193,11 +316,9 @@ int main(int argc, char** argv)
 		return 1;
 	}
 
-	authClient.sendLogIn("foo", "bar");
-
 	printf("Server ready!\n");
 
-	while (false && !_should_close)
+	while (!_should_close)
 	{
 		key_listen();
 		// Initialize our read set
@@ -296,61 +417,23 @@ int main(int argc, char** argv)
 
 					Message* recievedMessage = readMessage(client->recvBuf);
 
-					switch (recievedMessage->type) {
-						case LOGIN: {
-							client->name = ((LoginMessage*)recievedMessage)->client_name;
-							printf("%s logged in\n", ((LoginMessage*)recievedMessage)->client_name.c_str());
-							break;
-						}
-						case JOIN: {
-							JoinMessage join = *((JoinMessage*)recievedMessage);
-							_room_m.addMember(join.room_name, client);
-							printf("%s added to %s\n", client->name.c_str(), join.room_name.c_str());
-
-							RecieveMessage* recv = new RecieveMessage();
-							recv->sender_name = "server";
-							recv->room_name = join.room_name;
-							recv->message = client->name + " joined the room.";
-							_room_m.broadcastMessage(recv);
-							delete recv;
-							break;
-						}						
-						case LEAVE: {
-							LeaveMessage* leave = (LeaveMessage*)recievedMessage;
-							_room_m.removeMember(leave->room_name, client);
-							printf("%s left %s\n", client->name.c_str(), leave->room_name.c_str());
-
-							RecieveMessage* recv = new RecieveMessage();
-							recv->sender_name = "server";
-							recv->room_name = leave->room_name;
-							recv->message = client->name + " left the room.";
-							_room_m.broadcastMessage(recv);
-							delete recv;
-
-							break;
-						}
-						case SEND: {
-							UserMessage *userMessage = (UserMessage*)recievedMessage;
-							
-							RecieveMessage* recv = new RecieveMessage();
-							recv->sender_name = client->name;
-							recv->room_name = userMessage->room_name;
-							recv->message = userMessage->message;
-							printf("%s sends %s: %s\n", recv->sender_name.c_str(),
-								recv->room_name.c_str(),
-								recv->message.c_str());
-
-							_room_m.broadcastMessage(recv);
-							delete recv;
-						}
-					}
+					processMessages(client, recievedMessage);
+					
 					delete recievedMessage;
 				}
 				else {
 					disconnectClient(i);
 				}
 			}
+		} // for listening to clients
+
+		// Listening to responses from Auth Server
+		google::protobuf::Message* authMessage = authClient.recieveMessage();
+		if (authMessage)
+		{
+			processAuthMessage(authMessage);
 		}
+		authMessage = NULL;
 	}
 
 	// cleanup

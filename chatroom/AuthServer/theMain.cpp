@@ -38,6 +38,8 @@ std::string schema = "casado_zuniga_project2";
 
 bool _should_close = false;
 
+AuthServer authServer;
+
 
 void CreateUser(std::string email, std::string password)
 {
@@ -105,47 +107,40 @@ void key_listen() {
 		printf("%d\n", ch);
 		if (ch == ESCAPE)
 		{
-			_should_close = true;
+			authServer.is_on = false;
 		}
 	}
 }
 
 int main(int argc, char** argv)
 {
-	AuthServer authServer;
 
 	if (!authServer.init()) { return 1; }
 
-	while (!_should_close) {
+	while (authServer.is_on) {
 
-		char buffer[DEFAULT_BUFLEN];
+		key_listen();
 
-		int iResult = authServer.recieveMessage(buffer);
+		google::protobuf::Message* recievedMessage = authServer.recieveMessage();
 
-		if (iResult > 0) {
+		if (recievedMessage) {
 
-			std::string recv_message;
+			std::string messageType = recievedMessage->GetTypeName();
 
-			for (int i = 0; i < iResult; i++) {
-				recv_message += buffer[i];
+			// Dile que OK a todo
+			if (messageType == "auth_protocol.Request") {
+				auth_protocol::Request* message = (auth_protocol::Request*)recievedMessage;
+
+				auth_protocol::ResponseOK ok;
+				ok.set_action(message->action());
+				ok.set_username(message->username());
+
+				printf("Recibi %d para %s\n", message->action(), message->username().c_str());
+
+				authServer.sendMessage(ok.SerializeAsString());
 			}
-
-			auth_protocol::Request* message = (auth_protocol::Request*)readAuthMessage(recv_message);
-
-			if (message) {
-				printf("recibi un %s\n", message->GetTypeName().c_str());
-
-				printf("username: %s, password: %s\n", 
-					message->username().c_str(),
-					message->plaintextpassword().c_str());
-			}
-
-		}
-		else if (iResult < 0) {
-			_should_close = true;
 		}
 	}
-
 
 	authServer.closeServer();
 

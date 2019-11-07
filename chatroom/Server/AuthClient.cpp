@@ -21,6 +21,11 @@
 #define ESCAPE 27
 #define RETURN 8
 
+AuthClient::AuthClient() {
+	Flags = 0;
+	NonBlock = 1;
+}
+
 bool AuthClient::init() {
 	WSADATA wsaData;
 	int iResult;
@@ -101,14 +106,21 @@ bool AuthClient::init() {
 	return true;
 }
 
-bool AuthClient::sendSignUp(std::string username, std::string password) 
+bool AuthClient::sendMessage(std::string serializedMessage)
 {
-	if (connectSocket == INVALID_SOCKET) { return false; }
-	std::string signUpRequest = writeSignUpRequest(username, password);
-	int iResult = send(connectSocket, signUpRequest.c_str(), signUpRequest.size(), 0);
-	if (iResult == SOCKET_ERROR)
+	DWORD nBytes = serializedMessage.size();
+
+	WSABUF buffer;
+	buffer.buf = (char*)serializedMessage.c_str();
+	buffer.len = serializedMessage.size();
+
+	int iSendResult = send(connectSocket, 
+		serializedMessage.c_str(), 
+		serializedMessage.size(), 0);
+
+	if (iSendResult == SOCKET_ERROR)
 	{
-		printf("sign up request failed with error: %d\n", WSAGetLastError());
+		printf("send to Auth Server failed with error: %d\n", WSAGetLastError());
 		closesocket(connectSocket);
 		WSACleanup();
 		return false;
@@ -117,18 +129,42 @@ bool AuthClient::sendSignUp(std::string username, std::string password)
 	return true;
 }
 
-bool AuthClient::sendLogIn(std::string username, std::string password) 
+google::protobuf::Message* AuthClient::recieveMessage() 
 {
-	if (connectSocket == INVALID_SOCKET) { return false; }
-	std::string loginRequest = writeLoginRequest(username, password);
-	int iResult = send(connectSocket, loginRequest.c_str(), loginRequest.size(), 0);
-	if (iResult == SOCKET_ERROR)
-	{
-		printf("login request failed with error: %d\n", WSAGetLastError());
-		closesocket(connectSocket);
-		WSACleanup();
-		return false;
+	if (connectSocket) {
+
+		int iResult = ioctlsocket(connectSocket, FIONBIO, &NonBlock);
+		if (iResult == SOCKET_ERROR)
+		{
+			printf("ioctlsocket() failed with error %d\n", WSAGetLastError());
+			closesocket(connectSocket);
+			WSACleanup();
+			return NULL;
+		}
+		char buffer[DEFAULT_BUFLEN];
+		iResult = recv(connectSocket, buffer, DEFAULT_BUFLEN, 0);
+
+		if (iResult < 0 &&
+			WSAGetLastError() != WSAEWOULDBLOCK)
+		{
+			printf("recv from Auth Server failed with error: %d\n", WSAGetLastError());
+			closesocket(connectSocket);
+			WSACleanup();
+			return NULL;
+		}
+	
+		if (iResult > 0 &&
+			WSAGetLastError() != WSAEWOULDBLOCK)
+		{
+			std::string recv_message;
+
+			for (int i = 0; i < iResult; i++) {
+				recv_message += buffer[i];
+			}
+
+			return readAuthMessage(recv_message);
+		}
 	}
 
-	return true;
+	return NULL;
 }
