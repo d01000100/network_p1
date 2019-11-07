@@ -112,6 +112,8 @@ void processMessages(ClientInfo* client, Message* recievedMessage) {
 		authClient.sendMessage(writeLoginRequest( username, password));
 
 		printf("Requesting login of %s\n", username.c_str());
+
+		client->name = username;
 		break;
 	}
 	case JOIN: {
@@ -385,7 +387,7 @@ int main(int argc, char** argv)
 				client->dataBuf.buf = (char*)client->recvBuf.getBuffer();
 				client->dataBuf.len = DEFAULT_BUFLEN;
 
-
+				printf("Recieving from client %s\n", client->name.c_str());
 				DWORD Flags = 0;
 				iResult = WSARecv(
 					client->socket,
