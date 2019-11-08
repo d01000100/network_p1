@@ -11,7 +11,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-
+using namespace std;
 
 // Need to link with Ws2_32.lib
 #pragma comment (lib, "Ws2_32.lib")
@@ -25,6 +25,8 @@
 
 std::vector<std::string> receivedMessages;
 std::string client_name;
+std::string client_password;
+int client_option = 3;
 std::string* message = new std::string();
 RecieveBuffer rcvBuffer;
 
@@ -90,6 +92,44 @@ SendBuffer checkMessage(std::string message)
 	message.erase(0, pos + delimiter.length());
 
 	return determineMsgType(msgType,message,roomName);
+}
+
+void loginLoop(SOCKET* connectSocket)
+{
+	int iResult;
+	do
+	{
+		system("cls");
+		std::cout << "What would you like to do?\n" << std::endl;
+		std::cout << "1. Log In" << std::endl;
+		std::cout << "2. Sign Up\n" << std::endl;
+		std::cout << "Option:\t";
+		std::cin >> client_option;
+	} while (client_option < 1 || client_option>2);
+
+	system("cls");
+	std::cout << ((client_option == 1) ? "Log In" : "Sign Up") << std::endl;
+	std::cout << "======================================\n" << std::endl;
+	std::cout << "Your username:\t";
+	std::cin >> client_name;
+	std::cout << "Password:\t";
+	std::cin >> client_password;
+
+	LoginMessage loginMessage;
+	loginMessage.client_name = client_name + " " + client_password + " " + std::to_string(client_option - 1);
+	SendBuffer theBuffer;
+	theBuffer = writeMessage(&loginMessage);
+
+	printf("Logging in to the server...\n");
+	iResult = send(*connectSocket, (char*)theBuffer.getBuffer(), theBuffer.getDataLength(), 0);
+	if (iResult == SOCKET_ERROR)
+	{
+		printf("send() failed with error: %d\n", WSAGetLastError());
+		closesocket(*connectSocket);
+		WSACleanup();
+		return;
+	}
+	// printf("Bytes sent: %d\n", iResult);
 }
 
 int main(int argc, char** argv)
@@ -170,25 +210,7 @@ int main(int argc, char** argv)
 	}
 	printf("Successfully connected to the server on socket %d!\n", (int)connectSocket);
 
-	// Make user login
-	std::cout << "Input username:\t";
-	std::getline(std::cin, client_name);
-
-	LoginMessage loginMessage;
-	loginMessage.client_name = client_name;
-	SendBuffer theBuffer;
-	theBuffer = writeMessage(&loginMessage);
-
-	printf("Logging in to the server...\n");
-	iResult = send(connectSocket, (char*)theBuffer.getBuffer(), theBuffer.getDataLength(), 0);
-	if (iResult == SOCKET_ERROR)
-	{
-		printf("send() failed with error: %d\n", WSAGetLastError());
-		closesocket(connectSocket);
-		WSACleanup();
-		return 1;
-	}
-	// printf("Bytes sent: %d\n", iResult);
+	loginLoop(&connectSocket);
 
 	system("cls");
 	std::cout << "Welcome " << client_name << "!!\n" << std::endl;
