@@ -1,4 +1,5 @@
 #include "AuthServer.h"
+#include "SQLFunctions.h"
 
 #define DEFAULT_BUFLEN 512
 #define AUTH_SERVER_PORT "5160"
@@ -250,8 +251,30 @@ void AuthServer::processMessage(google::protobuf::Message* recievedMessage) {
 			auth_protocol::Request* message = (auth_protocol::Request*)recievedMessage;
 
 			printf("Recibi %d para %s\n", message->action(), message->username().c_str());
+			std::string sql_response;
 
-			sendMessage(writeLoginOK(message->username()));
+			switch (message->action()) {
+			case auth_protocol::LOGIN:
+				sql_response = authenticateUser(message->username(), message->plaintextpassword());
+				if (sql_response == "Succesful login") {
+					sendMessage(writeLoginOK(message->username()));
+					printf("sending login ok\n");
+				}
+				else {
+					sendMessage(writeLoginError(message->username(), sql_response));
+					printf("sending login error\n");
+				}
+				break;
+			case auth_protocol::SIGN_UP:
+				sql_response = createUser(message->username(), message->plaintextpassword());
+				if (sql_response == "succesful creation of user") {
+					sendMessage(writeSignUpOK(message->username()));
+				}
+				else {
+					sendMessage(writeSignUpError(message->username(), sql_response));
+				}
+				break;
+			}
 		}
 	}
 }

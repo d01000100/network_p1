@@ -324,6 +324,223 @@ class Request :
 };
 // -------------------------------------------------------------------
 
+class ResponseError :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:auth_protocol.ResponseError) */ {
+ public:
+  ResponseError();
+  virtual ~ResponseError();
+
+  ResponseError(const ResponseError& from);
+  ResponseError(ResponseError&& from) noexcept
+    : ResponseError() {
+    *this = ::std::move(from);
+  }
+
+  inline ResponseError& operator=(const ResponseError& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline ResponseError& operator=(ResponseError&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields();
+  }
+  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields();
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return GetMetadataStatic().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return GetMetadataStatic().reflection;
+  }
+  static const ResponseError& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ResponseError* internal_default_instance() {
+    return reinterpret_cast<const ResponseError*>(
+               &_ResponseError_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    1;
+
+  friend void swap(ResponseError& a, ResponseError& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(ResponseError* other) {
+    if (other == this) return;
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ResponseError* New() const final {
+    return CreateMaybeMessage<ResponseError>(nullptr);
+  }
+
+  ResponseError* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<ResponseError>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const ResponseError& from);
+  void MergeFrom(const ResponseError& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* InternalSerializeWithCachedSizesToArray(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  inline void SharedCtor();
+  inline void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ResponseError* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "auth_protocol.ResponseError";
+  }
+  private:
+  inline ::PROTOBUF_NAMESPACE_ID::Arena* GetArenaNoVirtual() const {
+    return nullptr;
+  }
+  inline void* MaybeArenaPtr() const {
+    return nullptr;
+  }
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+  private:
+  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
+    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_auth_2eproto);
+    return ::descriptor_table_auth_2eproto.file_level_metadata[kIndexInFileMessages];
+  }
+
+  public:
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kUsernameFieldNumber = 3,
+    kErrorFieldNumber = 4,
+    kLengthFieldNumber = 1,
+    kActionFieldNumber = 2,
+    kVilchisFieldNumber = 5,
+  };
+  // required string username = 3;
+  bool has_username() const;
+  private:
+  bool _internal_has_username() const;
+  public:
+  void clear_username();
+  const std::string& username() const;
+  void set_username(const std::string& value);
+  void set_username(std::string&& value);
+  void set_username(const char* value);
+  void set_username(const char* value, size_t size);
+  std::string* mutable_username();
+  std::string* release_username();
+  void set_allocated_username(std::string* username);
+  private:
+  const std::string& _internal_username() const;
+  void _internal_set_username(const std::string& value);
+  std::string* _internal_mutable_username();
+  public:
+
+  // required string error = 4;
+  bool has_error() const;
+  private:
+  bool _internal_has_error() const;
+  public:
+  void clear_error();
+  const std::string& error() const;
+  void set_error(const std::string& value);
+  void set_error(std::string&& value);
+  void set_error(const char* value);
+  void set_error(const char* value, size_t size);
+  std::string* mutable_error();
+  std::string* release_error();
+  void set_allocated_error(std::string* error);
+  private:
+  const std::string& _internal_error() const;
+  void _internal_set_error(const std::string& value);
+  std::string* _internal_mutable_error();
+  public:
+
+  // required int32 length = 1;
+  bool has_length() const;
+  private:
+  bool _internal_has_length() const;
+  public:
+  void clear_length();
+  ::PROTOBUF_NAMESPACE_ID::int32 length() const;
+  void set_length(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_length() const;
+  void _internal_set_length(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // required .auth_protocol.Action action = 2;
+  bool has_action() const;
+  private:
+  bool _internal_has_action() const;
+  public:
+  void clear_action();
+  ::auth_protocol::Action action() const;
+  void set_action(::auth_protocol::Action value);
+  private:
+  ::auth_protocol::Action _internal_action() const;
+  void _internal_set_action(::auth_protocol::Action value);
+  public:
+
+  // required bool vilchis = 5;
+  bool has_vilchis() const;
+  private:
+  bool _internal_has_vilchis() const;
+  public:
+  void clear_vilchis();
+  bool vilchis() const;
+  void set_vilchis(bool value);
+  private:
+  bool _internal_vilchis() const;
+  void _internal_set_vilchis(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:auth_protocol.ResponseError)
+ private:
+  class _Internal;
+
+  // helper for ByteSizeLong()
+  size_t RequiredFieldsByteSizeFallback() const;
+
+  ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
+  ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr username_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr error_;
+  ::PROTOBUF_NAMESPACE_ID::int32 length_;
+  int action_;
+  bool vilchis_;
+  friend struct ::TableStruct_auth_2eproto;
+};
+// -------------------------------------------------------------------
+
 class ResponseOK :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:auth_protocol.ResponseOK) */ {
  public:
@@ -373,7 +590,7 @@ class ResponseOK :
                &_ResponseOK_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    1;
+    2;
 
   friend void swap(ResponseOK& a, ResponseOK& b) {
     a.Swap(&b);
@@ -500,201 +717,6 @@ class ResponseOK :
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr username_;
   ::PROTOBUF_NAMESPACE_ID::int32 length_;
   int action_;
-  friend struct ::TableStruct_auth_2eproto;
-};
-// -------------------------------------------------------------------
-
-class ResponseError :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:auth_protocol.ResponseError) */ {
- public:
-  ResponseError();
-  virtual ~ResponseError();
-
-  ResponseError(const ResponseError& from);
-  ResponseError(ResponseError&& from) noexcept
-    : ResponseError() {
-    *this = ::std::move(from);
-  }
-
-  inline ResponseError& operator=(const ResponseError& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline ResponseError& operator=(ResponseError&& from) noexcept {
-    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
-      if (this != &from) InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  inline const ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields();
-  }
-  inline ::PROTOBUF_NAMESPACE_ID::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields();
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return GetMetadataStatic().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return GetMetadataStatic().reflection;
-  }
-  static const ResponseError& default_instance();
-
-  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const ResponseError* internal_default_instance() {
-    return reinterpret_cast<const ResponseError*>(
-               &_ResponseError_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    2;
-
-  friend void swap(ResponseError& a, ResponseError& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(ResponseError* other) {
-    if (other == this) return;
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  inline ResponseError* New() const final {
-    return CreateMaybeMessage<ResponseError>(nullptr);
-  }
-
-  ResponseError* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
-    return CreateMaybeMessage<ResponseError>(arena);
-  }
-  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
-  void CopyFrom(const ResponseError& from);
-  void MergeFrom(const ResponseError& from);
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  ::PROTOBUF_NAMESPACE_ID::uint8* InternalSerializeWithCachedSizesToArray(
-      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _cached_size_.Get(); }
-
-  private:
-  inline void SharedCtor();
-  inline void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(ResponseError* other);
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "auth_protocol.ResponseError";
-  }
-  private:
-  inline ::PROTOBUF_NAMESPACE_ID::Arena* GetArenaNoVirtual() const {
-    return nullptr;
-  }
-  inline void* MaybeArenaPtr() const {
-    return nullptr;
-  }
-  public:
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-  private:
-  static ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadataStatic() {
-    ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&::descriptor_table_auth_2eproto);
-    return ::descriptor_table_auth_2eproto.file_level_metadata[kIndexInFileMessages];
-  }
-
-  public:
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kUsernameFieldNumber = 3,
-    kLengthFieldNumber = 1,
-    kActionFieldNumber = 2,
-    kErrorFieldNumber = 4,
-  };
-  // required string username = 3;
-  bool has_username() const;
-  private:
-  bool _internal_has_username() const;
-  public:
-  void clear_username();
-  const std::string& username() const;
-  void set_username(const std::string& value);
-  void set_username(std::string&& value);
-  void set_username(const char* value);
-  void set_username(const char* value, size_t size);
-  std::string* mutable_username();
-  std::string* release_username();
-  void set_allocated_username(std::string* username);
-  private:
-  const std::string& _internal_username() const;
-  void _internal_set_username(const std::string& value);
-  std::string* _internal_mutable_username();
-  public:
-
-  // required int32 length = 1;
-  bool has_length() const;
-  private:
-  bool _internal_has_length() const;
-  public:
-  void clear_length();
-  ::PROTOBUF_NAMESPACE_ID::int32 length() const;
-  void set_length(::PROTOBUF_NAMESPACE_ID::int32 value);
-  private:
-  ::PROTOBUF_NAMESPACE_ID::int32 _internal_length() const;
-  void _internal_set_length(::PROTOBUF_NAMESPACE_ID::int32 value);
-  public:
-
-  // required .auth_protocol.Action action = 2;
-  bool has_action() const;
-  private:
-  bool _internal_has_action() const;
-  public:
-  void clear_action();
-  ::auth_protocol::Action action() const;
-  void set_action(::auth_protocol::Action value);
-  private:
-  ::auth_protocol::Action _internal_action() const;
-  void _internal_set_action(::auth_protocol::Action value);
-  public:
-
-  // required .auth_protocol.Error error = 4;
-  bool has_error() const;
-  private:
-  bool _internal_has_error() const;
-  public:
-  void clear_error();
-  ::auth_protocol::Error error() const;
-  void set_error(::auth_protocol::Error value);
-  private:
-  ::auth_protocol::Error _internal_error() const;
-  void _internal_set_error(::auth_protocol::Error value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:auth_protocol.ResponseError)
- private:
-  class _Internal;
-
-  // helper for ByteSizeLong()
-  size_t RequiredFieldsByteSizeFallback() const;
-
-  ::PROTOBUF_NAMESPACE_ID::internal::InternalMetadataWithArena _internal_metadata_;
-  ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
-  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr username_;
-  ::PROTOBUF_NAMESPACE_ID::int32 length_;
-  int action_;
-  int error_;
   friend struct ::TableStruct_auth_2eproto;
 };
 // ===================================================================
@@ -909,6 +931,237 @@ inline void Request::set_allocated_plaintextpassword(std::string* plaintextpassw
 
 // -------------------------------------------------------------------
 
+// ResponseError
+
+// required int32 length = 1;
+inline bool ResponseError::_internal_has_length() const {
+  bool value = (_has_bits_[0] & 0x00000004u) != 0;
+  return value;
+}
+inline bool ResponseError::has_length() const {
+  return _internal_has_length();
+}
+inline void ResponseError::clear_length() {
+  length_ = 0;
+  _has_bits_[0] &= ~0x00000004u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 ResponseError::_internal_length() const {
+  return length_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 ResponseError::length() const {
+  // @@protoc_insertion_point(field_get:auth_protocol.ResponseError.length)
+  return _internal_length();
+}
+inline void ResponseError::_internal_set_length(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _has_bits_[0] |= 0x00000004u;
+  length_ = value;
+}
+inline void ResponseError::set_length(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_length(value);
+  // @@protoc_insertion_point(field_set:auth_protocol.ResponseError.length)
+}
+
+// required .auth_protocol.Action action = 2;
+inline bool ResponseError::_internal_has_action() const {
+  bool value = (_has_bits_[0] & 0x00000008u) != 0;
+  return value;
+}
+inline bool ResponseError::has_action() const {
+  return _internal_has_action();
+}
+inline void ResponseError::clear_action() {
+  action_ = 0;
+  _has_bits_[0] &= ~0x00000008u;
+}
+inline ::auth_protocol::Action ResponseError::_internal_action() const {
+  return static_cast< ::auth_protocol::Action >(action_);
+}
+inline ::auth_protocol::Action ResponseError::action() const {
+  // @@protoc_insertion_point(field_get:auth_protocol.ResponseError.action)
+  return _internal_action();
+}
+inline void ResponseError::_internal_set_action(::auth_protocol::Action value) {
+  assert(::auth_protocol::Action_IsValid(value));
+  _has_bits_[0] |= 0x00000008u;
+  action_ = value;
+}
+inline void ResponseError::set_action(::auth_protocol::Action value) {
+  _internal_set_action(value);
+  // @@protoc_insertion_point(field_set:auth_protocol.ResponseError.action)
+}
+
+// required string username = 3;
+inline bool ResponseError::_internal_has_username() const {
+  bool value = (_has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool ResponseError::has_username() const {
+  return _internal_has_username();
+}
+inline void ResponseError::clear_username() {
+  username_.ClearToEmptyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline const std::string& ResponseError::username() const {
+  // @@protoc_insertion_point(field_get:auth_protocol.ResponseError.username)
+  return _internal_username();
+}
+inline void ResponseError::set_username(const std::string& value) {
+  _internal_set_username(value);
+  // @@protoc_insertion_point(field_set:auth_protocol.ResponseError.username)
+}
+inline std::string* ResponseError::mutable_username() {
+  // @@protoc_insertion_point(field_mutable:auth_protocol.ResponseError.username)
+  return _internal_mutable_username();
+}
+inline const std::string& ResponseError::_internal_username() const {
+  return username_.GetNoArena();
+}
+inline void ResponseError::_internal_set_username(const std::string& value) {
+  _has_bits_[0] |= 0x00000001u;
+  username_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value);
+}
+inline void ResponseError::set_username(std::string&& value) {
+  _has_bits_[0] |= 0x00000001u;
+  username_.SetNoArena(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:auth_protocol.ResponseError.username)
+}
+inline void ResponseError::set_username(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _has_bits_[0] |= 0x00000001u;
+  username_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:auth_protocol.ResponseError.username)
+}
+inline void ResponseError::set_username(const char* value, size_t size) {
+  _has_bits_[0] |= 0x00000001u;
+  username_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:auth_protocol.ResponseError.username)
+}
+inline std::string* ResponseError::_internal_mutable_username() {
+  _has_bits_[0] |= 0x00000001u;
+  return username_.MutableNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline std::string* ResponseError::release_username() {
+  // @@protoc_insertion_point(field_release:auth_protocol.ResponseError.username)
+  if (!has_username()) {
+    return nullptr;
+  }
+  _has_bits_[0] &= ~0x00000001u;
+  return username_.ReleaseNonDefaultNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline void ResponseError::set_allocated_username(std::string* username) {
+  if (username != nullptr) {
+    _has_bits_[0] |= 0x00000001u;
+  } else {
+    _has_bits_[0] &= ~0x00000001u;
+  }
+  username_.SetAllocatedNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), username);
+  // @@protoc_insertion_point(field_set_allocated:auth_protocol.ResponseError.username)
+}
+
+// required string error = 4;
+inline bool ResponseError::_internal_has_error() const {
+  bool value = (_has_bits_[0] & 0x00000002u) != 0;
+  return value;
+}
+inline bool ResponseError::has_error() const {
+  return _internal_has_error();
+}
+inline void ResponseError::clear_error() {
+  error_.ClearToEmptyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  _has_bits_[0] &= ~0x00000002u;
+}
+inline const std::string& ResponseError::error() const {
+  // @@protoc_insertion_point(field_get:auth_protocol.ResponseError.error)
+  return _internal_error();
+}
+inline void ResponseError::set_error(const std::string& value) {
+  _internal_set_error(value);
+  // @@protoc_insertion_point(field_set:auth_protocol.ResponseError.error)
+}
+inline std::string* ResponseError::mutable_error() {
+  // @@protoc_insertion_point(field_mutable:auth_protocol.ResponseError.error)
+  return _internal_mutable_error();
+}
+inline const std::string& ResponseError::_internal_error() const {
+  return error_.GetNoArena();
+}
+inline void ResponseError::_internal_set_error(const std::string& value) {
+  _has_bits_[0] |= 0x00000002u;
+  error_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value);
+}
+inline void ResponseError::set_error(std::string&& value) {
+  _has_bits_[0] |= 0x00000002u;
+  error_.SetNoArena(
+    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:auth_protocol.ResponseError.error)
+}
+inline void ResponseError::set_error(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  _has_bits_[0] |= 0x00000002u;
+  error_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:auth_protocol.ResponseError.error)
+}
+inline void ResponseError::set_error(const char* value, size_t size) {
+  _has_bits_[0] |= 0x00000002u;
+  error_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:auth_protocol.ResponseError.error)
+}
+inline std::string* ResponseError::_internal_mutable_error() {
+  _has_bits_[0] |= 0x00000002u;
+  return error_.MutableNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline std::string* ResponseError::release_error() {
+  // @@protoc_insertion_point(field_release:auth_protocol.ResponseError.error)
+  if (!has_error()) {
+    return nullptr;
+  }
+  _has_bits_[0] &= ~0x00000002u;
+  return error_.ReleaseNonDefaultNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+inline void ResponseError::set_allocated_error(std::string* error) {
+  if (error != nullptr) {
+    _has_bits_[0] |= 0x00000002u;
+  } else {
+    _has_bits_[0] &= ~0x00000002u;
+  }
+  error_.SetAllocatedNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), error);
+  // @@protoc_insertion_point(field_set_allocated:auth_protocol.ResponseError.error)
+}
+
+// required bool vilchis = 5;
+inline bool ResponseError::_internal_has_vilchis() const {
+  bool value = (_has_bits_[0] & 0x00000010u) != 0;
+  return value;
+}
+inline bool ResponseError::has_vilchis() const {
+  return _internal_has_vilchis();
+}
+inline void ResponseError::clear_vilchis() {
+  vilchis_ = false;
+  _has_bits_[0] &= ~0x00000010u;
+}
+inline bool ResponseError::_internal_vilchis() const {
+  return vilchis_;
+}
+inline bool ResponseError::vilchis() const {
+  // @@protoc_insertion_point(field_get:auth_protocol.ResponseError.vilchis)
+  return _internal_vilchis();
+}
+inline void ResponseError::_internal_set_vilchis(bool value) {
+  _has_bits_[0] |= 0x00000010u;
+  vilchis_ = value;
+}
+inline void ResponseError::set_vilchis(bool value) {
+  _internal_set_vilchis(value);
+  // @@protoc_insertion_point(field_set:auth_protocol.ResponseError.vilchis)
+}
+
+// -------------------------------------------------------------------
+
 // ResponseOK
 
 // required int32 length = 1;
@@ -1037,167 +1290,6 @@ inline void ResponseOK::set_allocated_username(std::string* username) {
   }
   username_.SetAllocatedNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), username);
   // @@protoc_insertion_point(field_set_allocated:auth_protocol.ResponseOK.username)
-}
-
-// -------------------------------------------------------------------
-
-// ResponseError
-
-// required int32 length = 1;
-inline bool ResponseError::_internal_has_length() const {
-  bool value = (_has_bits_[0] & 0x00000002u) != 0;
-  return value;
-}
-inline bool ResponseError::has_length() const {
-  return _internal_has_length();
-}
-inline void ResponseError::clear_length() {
-  length_ = 0;
-  _has_bits_[0] &= ~0x00000002u;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 ResponseError::_internal_length() const {
-  return length_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::int32 ResponseError::length() const {
-  // @@protoc_insertion_point(field_get:auth_protocol.ResponseError.length)
-  return _internal_length();
-}
-inline void ResponseError::_internal_set_length(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  _has_bits_[0] |= 0x00000002u;
-  length_ = value;
-}
-inline void ResponseError::set_length(::PROTOBUF_NAMESPACE_ID::int32 value) {
-  _internal_set_length(value);
-  // @@protoc_insertion_point(field_set:auth_protocol.ResponseError.length)
-}
-
-// required .auth_protocol.Action action = 2;
-inline bool ResponseError::_internal_has_action() const {
-  bool value = (_has_bits_[0] & 0x00000004u) != 0;
-  return value;
-}
-inline bool ResponseError::has_action() const {
-  return _internal_has_action();
-}
-inline void ResponseError::clear_action() {
-  action_ = 0;
-  _has_bits_[0] &= ~0x00000004u;
-}
-inline ::auth_protocol::Action ResponseError::_internal_action() const {
-  return static_cast< ::auth_protocol::Action >(action_);
-}
-inline ::auth_protocol::Action ResponseError::action() const {
-  // @@protoc_insertion_point(field_get:auth_protocol.ResponseError.action)
-  return _internal_action();
-}
-inline void ResponseError::_internal_set_action(::auth_protocol::Action value) {
-  assert(::auth_protocol::Action_IsValid(value));
-  _has_bits_[0] |= 0x00000004u;
-  action_ = value;
-}
-inline void ResponseError::set_action(::auth_protocol::Action value) {
-  _internal_set_action(value);
-  // @@protoc_insertion_point(field_set:auth_protocol.ResponseError.action)
-}
-
-// required string username = 3;
-inline bool ResponseError::_internal_has_username() const {
-  bool value = (_has_bits_[0] & 0x00000001u) != 0;
-  return value;
-}
-inline bool ResponseError::has_username() const {
-  return _internal_has_username();
-}
-inline void ResponseError::clear_username() {
-  username_.ClearToEmptyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  _has_bits_[0] &= ~0x00000001u;
-}
-inline const std::string& ResponseError::username() const {
-  // @@protoc_insertion_point(field_get:auth_protocol.ResponseError.username)
-  return _internal_username();
-}
-inline void ResponseError::set_username(const std::string& value) {
-  _internal_set_username(value);
-  // @@protoc_insertion_point(field_set:auth_protocol.ResponseError.username)
-}
-inline std::string* ResponseError::mutable_username() {
-  // @@protoc_insertion_point(field_mutable:auth_protocol.ResponseError.username)
-  return _internal_mutable_username();
-}
-inline const std::string& ResponseError::_internal_username() const {
-  return username_.GetNoArena();
-}
-inline void ResponseError::_internal_set_username(const std::string& value) {
-  _has_bits_[0] |= 0x00000001u;
-  username_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), value);
-}
-inline void ResponseError::set_username(std::string&& value) {
-  _has_bits_[0] |= 0x00000001u;
-  username_.SetNoArena(
-    &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:auth_protocol.ResponseError.username)
-}
-inline void ResponseError::set_username(const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  _has_bits_[0] |= 0x00000001u;
-  username_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:auth_protocol.ResponseError.username)
-}
-inline void ResponseError::set_username(const char* value, size_t size) {
-  _has_bits_[0] |= 0x00000001u;
-  username_.SetNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:auth_protocol.ResponseError.username)
-}
-inline std::string* ResponseError::_internal_mutable_username() {
-  _has_bits_[0] |= 0x00000001u;
-  return username_.MutableNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-}
-inline std::string* ResponseError::release_username() {
-  // @@protoc_insertion_point(field_release:auth_protocol.ResponseError.username)
-  if (!has_username()) {
-    return nullptr;
-  }
-  _has_bits_[0] &= ~0x00000001u;
-  return username_.ReleaseNonDefaultNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-}
-inline void ResponseError::set_allocated_username(std::string* username) {
-  if (username != nullptr) {
-    _has_bits_[0] |= 0x00000001u;
-  } else {
-    _has_bits_[0] &= ~0x00000001u;
-  }
-  username_.SetAllocatedNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), username);
-  // @@protoc_insertion_point(field_set_allocated:auth_protocol.ResponseError.username)
-}
-
-// required .auth_protocol.Error error = 4;
-inline bool ResponseError::_internal_has_error() const {
-  bool value = (_has_bits_[0] & 0x00000008u) != 0;
-  return value;
-}
-inline bool ResponseError::has_error() const {
-  return _internal_has_error();
-}
-inline void ResponseError::clear_error() {
-  error_ = 0;
-  _has_bits_[0] &= ~0x00000008u;
-}
-inline ::auth_protocol::Error ResponseError::_internal_error() const {
-  return static_cast< ::auth_protocol::Error >(error_);
-}
-inline ::auth_protocol::Error ResponseError::error() const {
-  // @@protoc_insertion_point(field_get:auth_protocol.ResponseError.error)
-  return _internal_error();
-}
-inline void ResponseError::_internal_set_error(::auth_protocol::Error value) {
-  assert(::auth_protocol::Error_IsValid(value));
-  _has_bits_[0] |= 0x00000008u;
-  error_ = value;
-}
-inline void ResponseError::set_error(::auth_protocol::Error value) {
-  _internal_set_error(value);
-  // @@protoc_insertion_point(field_set:auth_protocol.ResponseError.error)
 }
 
 #ifdef __GNUC__

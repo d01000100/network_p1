@@ -24,7 +24,7 @@ std::string writeSignUpOK(std::string username) {
 
 }
 
-std::string writeSignUpError(std::string username, Error error) {
+std::string writeSignUpError(std::string username, std::string error) {
 	ResponseError response;
 
 	response.set_username(username);
@@ -59,33 +59,39 @@ std::string writeLoginOK(std::string username) {
 
 }
 
-std::string writeLoginError(std::string username, Error error) {
+std::string writeLoginError(std::string username, std::string error) {
 	ResponseError response;
 
 	response.set_username(username);
 	response.set_action(LOGIN);
 	response.set_error(error);
 	response.set_length(response.ByteSizeLong());
+	response.set_vilchis(true);
 
 	return response.SerializeAsString();
 
 }
 
 google::protobuf::Message* readAuthMessage(std::string message) {
-	Request *req = new Request();
-	if (req->ParseFromString(message)) {
-		return req;
-	}
 
 	ResponseError *error = new ResponseError(); 
 	if (error->ParseFromString(message)) {
+		printf("decoded a error\n");
 		return error;
+	}
+
+	Request* req = new Request();
+	if (req->ParseFromString(message)) {
+		printf("decoded a request\n");
+		return req;
 	}
 
 	ResponseOK *ok = new ResponseOK();
 	if (ok->ParseFromString(message)) {
+		printf("decoded a ok\n");
 		return ok;
 	}
 
+	printf("can't decode\n");
 	return NULL;
 }

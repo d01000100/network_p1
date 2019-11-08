@@ -161,7 +161,6 @@ google::protobuf::Message* AuthClient::recieveMessage()
 			for (int i = 0; i < iResult; i++) {
 				recv_message += buffer[i];
 			}
-
 			return readAuthMessage(recv_message);
 		}
 	}

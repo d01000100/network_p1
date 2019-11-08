@@ -106,12 +106,18 @@ void processMessages(ClientInfo* client, Message* recievedMessage) {
 
 		// During login, the username and password are recieved in a single
 		// string separated by spaces
-		std::string username, password;
-		iss >> username; iss >> password;
+		std::string username, password, action;
+		iss >> username; iss >> password; iss >> action;
 
-		authClient.sendMessage(writeLoginRequest( username, password));
+		if (action == "0") {
+			authClient.sendMessage(writeLoginRequest( username, password));
+			printf("Requesting login of %s\n", username.c_str());
+		}
 
-		printf("Requesting login of %s\n", username.c_str());
+		if (action == "1") {
+			authClient.sendMessage(writeSignUpRequest(username, password));
+			printf("Requesting sign up of %s\n", username.c_str());
+		}
 
 		client->name = username;
 		break;
@@ -173,50 +179,57 @@ ClientInfo* findClientByUsername(std::string username)
 
 void processAuthMessage(google::protobuf::Message* authMessage) 
 {
-	std::string messageType = authMessage->GetTypeName();
+	std::string messageType = authMessage->GetTypeName(),
+		message_to_client = "";
+	ClientInfo* client = NULL;
 	if (messageType == "auth_protocol.ResponseOK") {
 		auth_protocol::ResponseOK* message = (auth_protocol::ResponseOK*)authMessage;
+
+		client = findClientByUsername(message->username());
 
 		switch (message->action()) {
 		case auth_protocol::SIGN_UP:
 			printf("User created with username %s\n",
 				message->username().c_str());
+			if (client) {
+				client->is_logged_in = true;
+			}
+			message_to_client = "ok";
 			break;
 		case auth_protocol::LOGIN:
 			printf("User %s logged in\n",
 				message->username().c_str());
-			ClientInfo* client = findClientByUsername(message->username());
 			if (client) {
 				client->is_logged_in = true;
 			}
+			message_to_client = "ok";
 			break;
 		}
 	}
 	if (messageType == "auth_protocol.ResponseError") {
 		auth_protocol::ResponseError* message = (auth_protocol::ResponseError*)authMessage;
-		std::string error;
 
-		switch (message->error()) {
-		case auth_protocol::REPEATED_USERNAME:
-			error = "The username is already taken";
-			break;
-		case auth_protocol::INVALID_CREDENTIALS:
-			error = "The username or password are not valid";
-			break;
-		case auth_protocol::INTERNAL_SERVER_ERROR:
-			error = "Internal Server Error";
-			break;
-		}
+		client = findClientByUsername(message->username());
 
 		switch (message->action()) {
 		case auth_protocol::SIGN_UP:
 			printf("Request to create a user with email %s failed because %s\n",
-				message->username().c_str(), error.c_str());
+				message->username().c_str(), message->error().c_str());
+			message_to_client = message->error();
 			break;
 		case auth_protocol::LOGIN:
 			printf("Request to login a user with email %s failed becasue %s\n",
-				message->username().c_str(), error.c_str());
+				message->username().c_str(), message->error().c_str());
+			message_to_client = message->error();
 			break;
+		}
+	}
+
+	if (message_to_client != "" && client) {
+		int iResult = send(client->socket, message_to_client.c_str(), message_to_client.size(), 0);
+		if (iResult == SOCKET_ERROR)
+		{
+			printf("response of login or sign up failed with error: %d\n", WSAGetLastError());
 		}
 	}
 }

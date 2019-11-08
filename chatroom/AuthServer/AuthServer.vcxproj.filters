@@ -21,9 +21,15 @@
     <ClCompile Include="AuthServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SQLFunctions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AuthServer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SQLFunctions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

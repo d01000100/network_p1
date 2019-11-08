@@ -38,28 +38,15 @@ void printMessage(google::protobuf::Message* recievedMessage) {
 	}
 	if (messageType == "auth_protocol.ResponseError") {
 		auth_protocol::ResponseError *message = (auth_protocol::ResponseError*)recievedMessage;
-		std::string error;
-
-		switch (message->error()) {
-		case auth_protocol::REPEATED_USERNAME:
-			error = "The username is already taken";
-			break;
-		case auth_protocol::INVALID_CREDENTIALS:
-			error = "The username or password are not valid";
-			break;
-		case auth_protocol::INTERNAL_SERVER_ERROR:
-			error = "Internal Server Error";
-			break;
-		}
 
 		switch (message->action()) {
 		case auth_protocol::SIGN_UP:
 			printf("Request to create a user with email %s failed because %s\n",
-				message->username().c_str(), error.c_str());
+				message->username().c_str(), message->error().c_str());
 			break;
 		case auth_protocol::LOGIN:
 			printf("Request to login a user with email %s failed becasue %s\n",
-				message->username().c_str(), error.c_str());
+				message->username().c_str(), message->error().c_str());
 			break;
 		}
 	}
@@ -81,7 +68,7 @@ int main(int argc, char** argv) {
 	printMessage(recievedMessage);
 
 	// sign up error
-	 serialized_message = writeSignUpError("foo@bar.mx", auth_protocol::REPEATED_USERNAME);
+	 serialized_message = writeSignUpError("foo@bar.mx", "Nombre de usuario ya existente");
 	recievedMessage = readAuthMessage(serialized_message);
 	printMessage(recievedMessage);
 
@@ -96,7 +83,7 @@ int main(int argc, char** argv) {
 	printMessage(recievedMessage);
 
 	// log in error
-	 serialized_message = writeLoginError("foo@bar.mx", auth_protocol::INVALID_CREDENTIALS);
+	 serialized_message = writeLoginError("foo@bar.mx", "Contrasenia incorrecta");
 	recievedMessage = readAuthMessage(serialized_message);
 	printMessage(recievedMessage);
 

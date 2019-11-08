@@ -5,10 +5,10 @@
 
 std::string writeSignUpRequest(std::string username, std::string clear_password);
 std::string writeSignUpOK(std::string username);
-std::string writeSignUpError(std::string username, auth_protocol::Error error);
+std::string writeSignUpError(std::string username, std::string error);
 std::string writeLoginRequest(std::string username, std::string clear_password);
 std::string writeLoginOK(std::string username);
-std::string writeLoginError(std::string username, auth_protocol::Error error);
+std::string writeLoginError(std::string username, std::string error);
 
 /* Returns a generic protobuf::Message pointer.
    The client must use GetTypeName() to get the proper message type
