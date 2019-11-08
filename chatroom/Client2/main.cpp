@@ -26,7 +26,7 @@ using namespace std;
 std::vector<std::string> receivedMessages;
 std::string client_name;
 std::string client_password;
-int client_option = 3;
+std::string client_option;
 std::string* message = new std::string();
 RecieveBuffer rcvBuffer;
 
@@ -96,40 +96,71 @@ SendBuffer checkMessage(std::string message)
 
 void loginLoop(SOCKET* connectSocket)
 {
-	int iResult;
-	do
-	{
+	while (true) {
+		int iResult;
+		client_option = "";
+		while (client_option != "1" && client_option != "2"){
+			system("cls");
+			std::cout << "What would you like to do?\n" << std::endl;
+			std::cout << "1. Log In" << std::endl;
+			std::cout << "2. Sign Up\n" << std::endl;
+			std::cout << "Option:\t";
+			std::cin >> client_option;
+		} 
+
 		system("cls");
-		std::cout << "What would you like to do?\n" << std::endl;
-		std::cout << "1. Log In" << std::endl;
-		std::cout << "2. Sign Up\n" << std::endl;
-		std::cout << "Option:\t";
-		std::cin >> client_option;
-	} while (client_option < 1 || client_option>2);
+		std::cout << ((client_option == "1") ? "Log In" : "Sign Up") << std::endl;
+		std::cout << "======================================\n" << std::endl;
+		std::cout << "Your username:\t";
+		std::cin >> client_name;
+		std::cout << "Password:\t";
+		std::cin >> client_password;
 
-	system("cls");
-	std::cout << ((client_option == 1) ? "Log In" : "Sign Up") << std::endl;
-	std::cout << "======================================\n" << std::endl;
-	std::cout << "Your username:\t";
-	std::cin >> client_name;
-	std::cout << "Password:\t";
-	std::cin >> client_password;
+		LoginMessage loginMessage;
+		loginMessage.client_name = client_name + " " + client_password + " " + client_option;
+		SendBuffer theBuffer;
+		theBuffer = writeMessage(&loginMessage);
 
-	LoginMessage loginMessage;
-	loginMessage.client_name = client_name + " " + client_password + " " + std::to_string(client_option - 1);
-	SendBuffer theBuffer;
-	theBuffer = writeMessage(&loginMessage);
+		printf("Connecting to the server...\n");
+		iResult = send(*connectSocket, (char*)theBuffer.getBuffer(), theBuffer.getDataLength(), 0);
+		if (iResult == SOCKET_ERROR)
+		{
+			printf("send() failed with error: %d\n", WSAGetLastError());
+			closesocket(*connectSocket);
+			WSACleanup();
+			return;
+		}
+		// recieving response
+		char buffer[DEFAULT_BUFLEN];
+		iResult = recv(*connectSocket, buffer, DEFAULT_BUFLEN, 0);
+		if (iResult > 0)
+		{
+			std::string recv_message;
 
-	printf("Logging in to the server...\n");
-	iResult = send(*connectSocket, (char*)theBuffer.getBuffer(), theBuffer.getDataLength(), 0);
-	if (iResult == SOCKET_ERROR)
-	{
-		printf("send() failed with error: %d\n", WSAGetLastError());
-		closesocket(*connectSocket);
-		WSACleanup();
-		return;
+			for (int b = 0; b < iResult; b++) {
+				recv_message += buffer[b];
+			}
+
+			if (recv_message == "ok") {
+				return;
+			}
+
+			printf("%s\n", recv_message.c_str());
+			system("pause");
+		}
+		else if (iResult == 0)
+		{
+			printf("Connection closed\n");
+			return;
+		}
+		else if (WSAGetLastError() != WSAEWOULDBLOCK) 
+		{
+			printf("recv failed with error: %d\n", WSAGetLastError());
+			closesocket(*connectSocket);
+			WSACleanup();
+			return;
+		}
 	}
-	// printf("Bytes sent: %d\n", iResult);
 }
 
 int main(int argc, char** argv)

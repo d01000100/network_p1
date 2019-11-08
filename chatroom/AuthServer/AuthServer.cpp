@@ -246,7 +246,6 @@ void AuthServer::processMessage(google::protobuf::Message* recievedMessage) {
 
 		std::string messageType = recievedMessage->GetTypeName();
 
-		// Dile que OK a todo
 		if (messageType == "auth_protocol.Request") {
 			auth_protocol::Request* message = (auth_protocol::Request*)recievedMessage;
 

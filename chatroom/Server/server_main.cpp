@@ -109,12 +109,12 @@ void processMessages(ClientInfo* client, Message* recievedMessage) {
 		std::string username, password, action;
 		iss >> username; iss >> password; iss >> action;
 
-		if (action == "0") {
+		if (action == "1") {
 			authClient.sendMessage(writeLoginRequest( username, password));
 			printf("Requesting login of %s\n", username.c_str());
 		}
 
-		if (action == "1") {
+		if (action == "2") {
 			authClient.sendMessage(writeSignUpRequest(username, password));
 			printf("Requesting sign up of %s\n", username.c_str());
 		}

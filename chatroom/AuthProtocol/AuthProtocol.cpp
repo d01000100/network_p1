@@ -31,6 +31,7 @@ std::string writeSignUpError(std::string username, std::string error) {
 	response.set_action(SIGN_UP);
 	response.set_error(error);
 	response.set_length(response.ByteSizeLong());
+	response.set_vilchis(true);
 
 	return response.SerializeAsString();
 
